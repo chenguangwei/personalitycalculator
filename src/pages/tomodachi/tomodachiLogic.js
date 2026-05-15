@@ -136,7 +136,7 @@ export function parseInitialValues() {
 export function buildShareUrl(values, region, language) {
   const base =
     window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? 'https://personalitycalculator.app/'
+      ? 'https://personalitycalculator.org/tomodachi-life-personality-calculator.html'
       : window.location.href;
   const url = new URL(base);
   url.search = '';

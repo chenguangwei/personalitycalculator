@@ -81,7 +81,7 @@ export const UI_TEXT = {
     copied: 'Copied',
     download: 'Download Card',
     cardLabel: 'My Personality',
-    shareText: (result) => `I got ${result.modifier} ${result.type} on personalitycalculator.app`,
+    shareText: (result) => `I got ${result.modifier} ${result.type} on personalitycalculator.org`,
     shareTitleText: 'My Tomodachi Life personality',
     seoTitle: 'Tomodachi Life Personality Chart Guide',
     seoBody:
@@ -117,7 +117,7 @@ export const UI_TEXT = {
     copied: 'コピー済み',
     download: 'カードをダウンロード',
     cardLabel: '私の性格',
-    shareText: (result) => `personalitycalculator.appで ${result.modifier} ${result.type} になりました`,
+    shareText: (result) => `personalitycalculator.orgで ${result.modifier} ${result.type} になりました`,
     shareTitleText: '私のTomodachi Life性格',
     seoTitle: 'トモダチコレクション 個性チャート＆計算機',
     seoBody:

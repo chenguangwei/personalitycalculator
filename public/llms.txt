@@ -1,0 +1,14 @@
+# Personality Calculator
+
+Personality Calculator provides free personality tests and calculators with instant, shareable results.
+
+## Pages
+
+- https://personalitycalculator.org/ - Directory of free personality tests and calculators.
+- https://personalitycalculator.org/mbti-personality-test.html - Free MBTI-inspired 60-question personality test with type, variant, scores, strengths, growth tips, and career matches.
+- https://personalitycalculator.org/tomodachi-life-personality-calculator.html - Tomodachi Life personality calculator with US and UK/EU naming, trait values, random generation, and downloadable result cards.
+
+## Notes
+
+- Tests are free to use.
+- User answers stay in the browser unless the user chooses to share a result link or card.

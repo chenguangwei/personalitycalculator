@@ -156,8 +156,11 @@ export function MbtiPage() {
   }
 
   async function shareResult() {
-    const shareUrl = `${window.location.origin}/mbti-personality-test.html`;
-    const text = `I got ${result.fullType}, ${result.profile.title}, on personalitycalculator.app.`;
+    const shareUrl =
+      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'https://personalitycalculator.org/mbti-personality-test.html'
+        : `${window.location.origin}/mbti-personality-test.html`;
+    const text = `I got ${result.fullType}, ${result.profile.title}, on personalitycalculator.org.`;
     if (navigator.share) {
       try {
         await navigator.share({ title: `My ${result.fullType} personality result`, text, url: shareUrl });
@@ -565,7 +568,7 @@ function MbtiShareCard({ result, refProp }) {
           </article>
         ))}
       </div>
-      <small>personalitycalculator.app</small>
+      <small>personalitycalculator.org</small>
     </div>
   );
 }

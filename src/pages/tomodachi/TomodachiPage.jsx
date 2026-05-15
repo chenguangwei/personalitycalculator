@@ -110,9 +110,9 @@ export function TomodachiPage() {
       <BackgroundPattern />
       <section className="calculator-shell" aria-label="Tomodachi Life personality calculator">
         <div className="topbar">
-          <a className="brand" href="/" aria-label="personalitycalculator.app home">
+          <a className="brand" href="/" aria-label="personalitycalculator.org home">
             <span className="brand-mark">pc</span>
-            <span>personalitycalculator.app</span>
+            <span>personalitycalculator.org</span>
           </a>
           <div className="top-controls">
             <div className="region-toggle" aria-label="Region">
@@ -400,7 +400,7 @@ function ShareCard({ refProp, result, copy, signatureName = '' }) {
         <span>{copy.cardLabel}</span>
         <h3>{result.modifier}<br />{result.type}</h3>
         <p>{display.description}</p>
-        <small>personalitycalculator.app</small>
+        <small>personalitycalculator.org</small>
         {signatureName && <b className="card-signature">{copy.cardSignaturePrefix} {signatureName}</b>}
       </div>
       <div className="card-art">
