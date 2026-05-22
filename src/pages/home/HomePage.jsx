@@ -14,6 +14,7 @@ import {
   Trophy,
 } from 'lucide-react';
 import { CATEGORIES, TESTS } from '../../data/tests.jsx';
+import { localizeTest } from '../../data/testTranslations.js';
 import { detectLocale, formatDuration, LOCALE_LABELS, SUPPORTED_LOCALES, syncLocale } from '../../i18n.js';
 
 const LOCALE_COPY = {
@@ -632,12 +633,13 @@ export function HomePage() {
   const [savedSuggestions, setSavedSuggestions] = useState([]);
   const searchRef = useRef(null);
   const copy = LOCALE_COPY[locale];
-  const featuredTests = TESTS.slice(0, 6);
+  const localizedTests = useMemo(() => TESTS.map((test) => localizeTest(test, locale)), [locale]);
+  const featuredTests = localizedTests.slice(0, 6);
   const testCount = TESTS.length;
   const questionCount = TESTS.reduce((sum, test) => sum + test.questions, 0);
   const filteredTests = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    return TESTS.filter((test) => {
+    return localizedTests.filter((test) => {
       const categoryMatch = activeCategory === 'All' || test.category === activeCategory;
       const queryMatch =
         !normalizedQuery ||
@@ -645,7 +647,7 @@ export function HomePage() {
         test.searchText.includes(normalizedQuery);
       return categoryMatch && queryMatch;
     });
-  }, [activeCategory, query]);
+  }, [activeCategory, localizedTests, query]);
   const filteredGuides = useMemo(
     () =>
       activeGuideTopic === 'all'

@@ -50,6 +50,7 @@ const ICON_CLASS_BY_CATEGORY = {
 };
 
 const GENERIC_CATALOG = GENERATED_TEST_CATALOG.map((test) => ({
+  slug: test.slug,
   title: test.title,
   description: test.description,
   category: test.category,
@@ -63,6 +64,7 @@ const GENERIC_CATALOG = GENERATED_TEST_CATALOG.map((test) => ({
 
 export const TESTS = [
   {
+    slug: 'mbti-personality-test',
     title: 'MBTI Test',
     description: 'Discover your 16 personality type with a complete 60-question assessment.',
     category: 'Popular',
@@ -74,6 +76,7 @@ export const TESTS = [
     searchText: 'mbti test 16 personality type introversion extraversion intuition sensing thinking feeling judging perceiving assertive turbulent strengths careers',
   },
   {
+    slug: 'tomodachi-life-personality-calculator',
     title: 'Tomodachi Life Personality Calculator',
     description: 'Get your unique Tomodachi Life personality and shareable profile card.',
     category: 'Games',

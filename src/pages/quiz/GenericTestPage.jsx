@@ -83,6 +83,112 @@ const QUIZ_COPY = {
   },
 };
 
+const CATEGORY_THEMES = {
+  Social: {
+    primary: '#2563eb',
+    secondary: '#14b8a6',
+    accent: '#f97316',
+    bgStart: '#eef6ff',
+    bgMid: '#f8fafc',
+    bgEnd: '#fff7ed',
+  },
+  Relationships: {
+    primary: '#e11d48',
+    secondary: '#8b5cf6',
+    accent: '#f59e0b',
+    bgStart: '#fff1f2',
+    bgMid: '#faf5ff',
+    bgEnd: '#fff7ed',
+  },
+  Career: {
+    primary: '#0f766e',
+    secondary: '#2563eb',
+    accent: '#f97316',
+    bgStart: '#ecfeff',
+    bgMid: '#f8fafc',
+    bgEnd: '#fff7ed',
+  },
+  Popular: {
+    primary: '#6d28d9',
+    secondary: '#2563eb',
+    accent: '#db2777',
+    bgStart: '#f5f3ff',
+    bgMid: '#f8fafc',
+    bgEnd: '#eff6ff',
+  },
+  Fun: {
+    primary: '#d97706',
+    secondary: '#db2777',
+    accent: '#2563eb',
+    bgStart: '#fffbeb',
+    bgMid: '#fff7ed',
+    bgEnd: '#fdf2f8',
+  },
+  Anime: {
+    primary: '#7c3aed',
+    secondary: '#ef4444',
+    accent: '#f59e0b',
+    bgStart: '#f5f3ff',
+    bgMid: '#fff1f2',
+    bgEnd: '#fffbeb',
+  },
+  Wellbeing: {
+    primary: '#059669',
+    secondary: '#0ea5e9',
+    accent: '#8b5cf6',
+    bgStart: '#ecfdf5',
+    bgMid: '#f0f9ff',
+    bgEnd: '#faf5ff',
+  },
+  Values: {
+    primary: '#7c2d12',
+    secondary: '#0f766e',
+    accent: '#ca8a04',
+    bgStart: '#fff7ed',
+    bgMid: '#f7fee7',
+    bgEnd: '#ecfdf5',
+  },
+  Introspective: {
+    primary: '#334155',
+    secondary: '#7c3aed',
+    accent: '#be123c',
+    bgStart: '#f8fafc',
+    bgMid: '#f1f5f9',
+    bgEnd: '#f5f3ff',
+  },
+};
+
+const TOPIC_THEMES = [
+  {
+    keywords: ['love', 'romantic', 'dating', 'flirting', 'attachment', 'relationship'],
+    theme: CATEGORY_THEMES.Relationships,
+  },
+  {
+    keywords: ['career', 'work', 'leadership', 'team', 'entrepreneur', 'productivity', 'negotiation'],
+    theme: CATEGORY_THEMES.Career,
+  },
+  {
+    keywords: ['stress', 'burnout', 'anxiety', 'wellbeing', 'well-being', 'mindfulness', 'cope', 'coping'],
+    theme: CATEGORY_THEMES.Wellbeing,
+  },
+  {
+    keywords: ['anime', 'pokemon', 'hogwarts', 'marvel', 'disney', 'fantasy', 'zodiac', 'tarot'],
+    theme: CATEGORY_THEMES.Anime,
+  },
+  {
+    keywords: ['money', 'risk', 'values', 'gratitude', 'meaning', 'purpose'],
+    theme: CATEGORY_THEMES.Values,
+  },
+  {
+    keywords: ['creativity', 'artist', 'humor', 'music', 'food', 'travel', 'aura', 'color'],
+    theme: CATEGORY_THEMES.Fun,
+  },
+  {
+    keywords: ['dark', 'difficult', 'narcissism', 'machiavellianism', 'perfectionism', 'avoidant', 'paranoid', 'depression'],
+    theme: CATEGORY_THEMES.Introspective,
+  },
+];
+
 function storageKey(slug) {
   return `personalitycalculator.${slug}.v1`;
 }
@@ -99,6 +205,37 @@ function loadAnswers(slug) {
   } catch {
     return {};
   }
+}
+
+function getQuizTheme(test) {
+  if (!test) return CATEGORY_THEMES.Social;
+  const searchable = `${test.slug} ${test.title} ${test.category}`.toLowerCase();
+  const topic = TOPIC_THEMES.find((item) => item.keywords.some((keyword) => searchable.includes(keyword)));
+  return topic?.theme || CATEGORY_THEMES[test.category] || CATEGORY_THEMES.Popular;
+}
+
+function themeToStyle(theme, result) {
+  const resultColor = result?.primary?.color || theme.primary;
+  return {
+    '--quiz-primary': theme.primary,
+    '--quiz-secondary': theme.secondary,
+    '--quiz-accent': theme.accent,
+    '--quiz-bg-start': theme.bgStart,
+    '--quiz-bg-mid': theme.bgMid,
+    '--quiz-bg-end': theme.bgEnd,
+    '--quiz-result-color': resultColor,
+  };
+}
+
+function dataUrlToFile(dataUrl, filename) {
+  const [header, data] = dataUrl.split(',');
+  const mime = header.match(/data:(.*?);base64/)?.[1] || 'image/png';
+  const binary = atob(data);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return new File([bytes], filename, { type: mime });
 }
 
 export function calculateResult(test, answers) {
@@ -222,10 +359,12 @@ export function GenericTestPage({ slug }) {
   const allAnswered = test ? answeredCount === test.questions.length : false;
   const result = useMemo(() => (test ? calculateResult(test, answers) : null), [test, answers]);
   const progress = test ? Math.round((answeredCount / test.questions.length) * 100) : 0;
+  const theme = useMemo(() => getQuizTheme(test), [test]);
+  const themeStyle = useMemo(() => themeToStyle(theme, complete ? result : null), [theme, complete, result]);
 
   if (loading) {
     return (
-      <main className="quiz-app">
+      <main className="quiz-app" style={themeToStyle(CATEGORY_THEMES.Social)}>
         <section className="quiz-not-found">
           <Brain size={40} />
           <h1>{commonCopy.loadingTitle}</h1>
@@ -238,7 +377,7 @@ export function GenericTestPage({ slug }) {
 
   if (!test || notFound) {
     return (
-      <main className="quiz-app">
+      <main className="quiz-app" style={themeToStyle(CATEGORY_THEMES.Social)}>
         <section className="quiz-not-found">
           <Brain size={40} />
           <h1>{commonCopy.notFoundTitle}</h1>
@@ -274,6 +413,26 @@ export function GenericTestPage({ slug }) {
         ? `https://personalitycalculator.org/${test.slug}.html`
         : window.location.href;
     const text = copy.shareText(result, test);
+    const filename = `${test.slug}-${result.primary.key}-result-card.png`;
+    let resultCardImage = null;
+    if (resultCardRef.current && result) {
+      resultCardImage = await toPng(resultCardRef.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: theme.bgStart,
+      });
+    }
+    if (navigator.share && resultCardImage && typeof File !== 'undefined') {
+      const file = dataUrlToFile(resultCardImage, filename);
+      if (!navigator.canShare || navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ title: test.title, text, url, files: [file] });
+          return;
+        } catch {
+          // Fall back to regular web sharing or copying.
+        }
+      }
+    }
     if (navigator.share) {
       try {
         await navigator.share({ title: test.title, text, url });
@@ -298,7 +457,7 @@ export function GenericTestPage({ slug }) {
     const dataUrl = await toPng(resultCardRef.current, {
       cacheBust: true,
       pixelRatio: 2,
-      backgroundColor: '#f8fbff',
+      backgroundColor: theme.bgStart,
     });
     const link = document.createElement('a');
     link.download = `${test.slug}-${result.primary.key}-result-card.png`;
@@ -307,7 +466,7 @@ export function GenericTestPage({ slug }) {
   }
 
   return (
-    <main className="quiz-app">
+    <main className="quiz-app" style={themeStyle}>
       <header className="quiz-header">
         <a href="/" className="quiz-back">
           <ArrowLeft size={18} />
@@ -405,10 +564,21 @@ export function GenericTestPage({ slug }) {
         <section className="quiz-result" id="quiz-result" aria-labelledby="quiz-result-title">
           <div className="quiz-result-main">
             <article className="quiz-result-card" ref={resultCardRef}>
-              <span className="quiz-result-label">{copy.strongestMatch}</span>
+              <div className="quiz-result-card-top">
+                <span className="quiz-result-label">{copy.strongestMatch}</span>
+                <strong>{result.primary.percent}%</strong>
+              </div>
               <h2 id="quiz-result-title">{result.primary.title}</h2>
               {result.secondary && <h3>{copy.secondaryPattern}: {result.secondary.title}</h3>}
               <p>{result.primary.summary}</p>
+              <div className="quiz-result-theme-bar">
+                <i style={{ width: `${result.primary.percent}%` }} />
+              </div>
+              <div className="quiz-result-traits">
+                {result.primary.strengths.slice(0, 3).map((strength) => (
+                  <span key={strength}>{strength}</span>
+                ))}
+              </div>
               <div className="quiz-card-footer">
                 <Brain size={17} />
                 <span>{test.title}</span>
