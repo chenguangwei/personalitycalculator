@@ -14,9 +14,13 @@ import {
   X,
 } from 'lucide-react';
 import { toPng } from 'html-to-image';
+import { detectLocale, LOCALE_LABELS, SUPPORTED_LOCALES, syncLocale } from '../../i18n.js';
+import { copyText } from '../../utils/clipboard.js';
 import {
   AXES,
   AXIS_LABELS_JA,
+  AXIS_LABELS_KO,
+  AXIS_LABELS_ZH,
   CARD_THEMES,
   CELL_COLORS,
   DEFAULT_VALUES,
@@ -37,15 +41,20 @@ import {
 export function TomodachiPage() {
   const initial = useMemo(parseInitialValues, []);
   const [region, setRegion] = useState(initial.region);
-  const [language, setLanguage] = useState(initial.language);
+  const [language, setLanguage] = useState(initial.language || detectLocale());
   const [mode, setMode] = useState('manual');
   const [values, setValues] = useState(initial.values);
   const [shareOpen, setShareOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const cardRef = useRef(null);
   const result = useMemo(() => personalityFor(values, region), [values, region]);
   const copy = UI_TEXT[language];
   const shareUrl = useMemo(() => buildShareUrl(values, region, language), [values, region, language]);
+
+  useEffect(() => {
+    syncLocale(language);
+  }, [language]);
 
   useEffect(() => {
     const url = new URL(window.location.href);
@@ -54,6 +63,15 @@ export function TomodachiPage() {
     Object.entries(values).forEach(([key, value]) => url.searchParams.set(key, String(value)));
     window.history.replaceState(null, '', url);
   }, [values, region, language]);
+
+  useEffect(() => {
+    if (!helpOpen) return undefined;
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') setHelpOpen(false);
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [helpOpen]);
 
   function updateValue(axis, value) {
     setMode('manual');
@@ -87,7 +105,7 @@ export function TomodachiPage() {
         // User cancellation is fine; fall through to copy.
       }
     }
-    await navigator.clipboard.writeText(shareUrl);
+    await copyText(`${text} ${shareUrl}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   }
@@ -106,7 +124,7 @@ export function TomodachiPage() {
   }
 
   return (
-    <main className="app" lang={language === 'ja' ? 'ja' : 'en'}>
+    <main className="app" lang={language === 'zh' ? 'zh-CN' : language}>
       <BackgroundPattern />
       <section className="calculator-shell" aria-label="Tomodachi Life personality calculator">
         <div className="topbar">
@@ -128,11 +146,10 @@ export function TomodachiPage() {
             <div className="language-toggle" aria-label={copy.languageLabel}>
               <Languages size={16} />
               {[
-                ['en', 'EN'],
-                ['ja', '日本語'],
-              ].map(([item, label]) => (
+                ...SUPPORTED_LOCALES,
+              ].map((item) => (
                 <button key={item} className={language === item ? 'active' : ''} onClick={() => setLanguage(item)}>
-                  {label}
+                  {LOCALE_LABELS[item]}
                 </button>
               ))}
             </div>
@@ -144,7 +161,13 @@ export function TomodachiPage() {
             <h1>{copy.title}</h1>
             <p className="intro">{copy.intro}</p>
           </div>
-          <button className="help-button" aria-label="Calculator help">
+          <button
+            className="help-button"
+            aria-label="Calculator help"
+            aria-haspopup="dialog"
+            aria-expanded={helpOpen}
+            onClick={() => setHelpOpen(true)}
+          >
             ?
           </button>
         </div>
@@ -212,6 +235,8 @@ export function TomodachiPage() {
           copy={copy}
         />
       )}
+
+      {helpOpen && <TomodachiHelpPanel copy={copy} onClose={() => setHelpOpen(false)} />}
     </main>
   );
 }
@@ -227,8 +252,14 @@ function BackgroundPattern() {
 }
 
 function axisLabel(axis, side, region, language) {
-  if (language !== 'ja') return axis[side];
-  const localized = AXIS_LABELS_JA[axis.key]?.[side];
+  const labelsByLanguage = {
+    ja: AXIS_LABELS_JA,
+    zh: AXIS_LABELS_ZH,
+    ko: AXIS_LABELS_KO,
+  };
+  const labels = labelsByLanguage[language];
+  if (!labels) return axis[side];
+  const localized = labels[axis.key]?.[side];
   if (localized && typeof localized === 'object') return localized[region];
   return localized || axis[side];
 }
@@ -384,6 +415,34 @@ function ShareModal({ result, shareUrl, copied, onClose, onShare, onDownload, ca
           {copy.download}
         </button>
       </div>
+    </div>
+  );
+}
+
+function TomodachiHelpPanel({ copy, onClose }) {
+  return (
+    <div className="help-backdrop" role="dialog" aria-modal="true" aria-labelledby="tomodachi-help-title">
+      <section className="help-panel">
+        <div className="help-panel-head">
+          <div>
+            <span>?</span>
+            <h2 id="tomodachi-help-title">{copy.helpTitle}</h2>
+          </div>
+          <button className="icon-button" onClick={onClose} aria-label={copy.helpClose}>
+            <X size={20} />
+          </button>
+        </div>
+        <p>{copy.helpIntro}</p>
+        <ol className="help-list">
+          {copy.helpItems.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ol>
+        <button className="primary-button" onClick={onClose}>
+          <Check size={18} />
+          {copy.helpClose}
+        </button>
+      </section>
     </div>
   );
 }

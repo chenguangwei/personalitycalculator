@@ -23,12 +23,227 @@ import {
   X,
 } from 'lucide-react';
 import { toPng } from 'html-to-image';
+import { COMMON_COPY, detectLocale, LOCALE_LABELS, SUPPORTED_LOCALES, syncLocale } from '../../i18n.js';
+import { copyText } from '../../utils/clipboard.js';
 import { calculateMbtiResult, MBTI_DIMENSIONS, MBTI_QUESTIONS } from './mbtiData.js';
 
 const STORAGE_KEY = 'personalitycalculator.mbti-progress.v1';
 const QUESTIONS_PER_PAGE = 10;
 const TOTAL_PAGES = Math.ceil(MBTI_QUESTIONS.length / QUESTIONS_PER_PAGE);
-const ANSWER_LABELS = ['Strongly Disagree', 'Disagree', 'Neutral', 'Agree', 'Strongly Agree'];
+
+const MBTI_COPY = {
+  en: {
+    title: 'MBTI Personality Test',
+    subtitle: 'Discover your personality type in a few minutes.',
+    privateTitle: '100% Private & Secure',
+    privateBody: 'Your answers are confidential.',
+    resultReady: 'Result Ready',
+    pageOf: (page, total) => `Page ${page} of ${total}`,
+    progressLine: (answered, total, progress) => `${answered} of ${total} answered · ${progress}% complete`,
+    questionTitle: 'Answer 10 quick statements',
+    questionIntro: (page, total, questions) => `Page ${page} of ${total} · ${questions} total questions. Choose what feels most natural, then continue.`,
+    questionSet: (page) => `Page ${page} questions`,
+    answerOptions: (index) => `Answer options for question ${index}`,
+    finishPage: 'Finish this page before moving on.',
+    pageComplete: 'This page is complete.',
+    missingAnswers: (count) => `${count} more ${count === 1 ? 'answer' : 'answers'} needed on this page.`,
+    previous: 'Previous',
+    nextPage: 'Next Page',
+    seeResult: 'See Result',
+    progressSaved: 'Progress saved',
+    saveProgress: 'Save progress / Resume later',
+    resultKicker: 'Your Personality Type',
+    shareDownload: 'Share / Download Card',
+    retake: 'Retake Test',
+    shareNote: 'Create a shareable result card or copy your result link.',
+    coreStrengths: 'Core strengths',
+    growthTips: 'Growth tips',
+    careerMatches: 'Career matches',
+    overview: 'Test Overview',
+    estimatedTime: 'Estimated time',
+    totalQuestions: 'Total questions',
+    questionPages: 'Question pages',
+    questionPagesValue: (total) => `${total} pages · 10 each`,
+    currentPage: 'Current page',
+    answered: 'Answered',
+    dimensionsTitle: 'The 5 Dimensions',
+    tipsTitle: 'Tips for Best Results',
+    tips: ['Answer honestly and naturally.', "Don't overthink the questions.", 'There are no right or wrong answers.', 'Your first choice is usually the best one.'],
+    seoTitle: 'Free MBTI-Inspired Personality Test with 60 Questions',
+    seoBody:
+      'This personality test estimates your likely 16-type preference pattern using five scored dimensions. It is designed for self-reflection, career exploration, relationship communication, and team discussion.',
+    scoringTitle: 'How the scoring works',
+    scoringBody:
+      'Each statement uses a 1-5 agreement scale. Positive and reverse-keyed items are balanced across every dimension. The side with the higher total becomes your letter.',
+    officialTitle: 'Is this the official MBTI assessment?',
+    officialBody:
+      'No. MBTI is a registered assessment system. This page is an independent MBTI-inspired calculator for educational self-reflection.',
+    aiTitle: 'Can AI search engines understand this page?',
+    aiBody: 'The page includes direct definitions, methodology notes, FAQ-style explanations, structured result language, and schema markup.',
+    shareModalTitle: 'Share Your Personality Result',
+    shareModalBody: 'Download a polished result card or share your type link.',
+    closeShare: 'Close share card',
+    shareCardKicker: 'Your Personality Type',
+    shareText: (result) => `I got ${result.fullType}, ${result.profile.title}, on personalitycalculator.org.`,
+    shareTitle: (result) => `My ${result.fullType} personality result`,
+  },
+  zh: {
+    title: 'MBTI 人格测试',
+    subtitle: '几分钟了解你的性格类型。',
+    privateTitle: '100% 私密安全',
+    privateBody: '你的答案仅保存在本地。',
+    resultReady: '结果已准备好',
+    pageOf: (page, total) => `第 ${page}/${total} 页`,
+    progressLine: (answered, total, progress) => `${answered}/${total} 已答 · ${progress}% 完成`,
+    questionTitle: '回答 10 个快速陈述',
+    questionIntro: (page, total, questions) => `第 ${page}/${total} 页 · 共 ${questions} 题。选择最符合自然状态的答案后继续。`,
+    questionSet: (page) => `第 ${page} 页题目`,
+    answerOptions: (index) => `第 ${index} 题选项`,
+    finishPage: '请先完成本页再继续。',
+    pageComplete: '本页已完成。',
+    missingAnswers: (count) => `本页还需要 ${count} 个答案。`,
+    previous: '上一页',
+    nextPage: '下一页',
+    seeResult: '查看结果',
+    progressSaved: '进度已保存',
+    saveProgress: '保存进度 / 稍后继续',
+    resultKicker: '你的人格类型',
+    shareDownload: '分享 / 下载卡片',
+    retake: '重新测试',
+    shareNote: '生成可分享的结果卡，或复制结果链接。',
+    coreStrengths: '核心优势',
+    growthTips: '成长建议',
+    careerMatches: '职业匹配',
+    overview: '测试概览',
+    estimatedTime: '预计用时',
+    totalQuestions: '题目总数',
+    questionPages: '题目页数',
+    questionPagesValue: (total) => `${total} 页 · 每页 10 题`,
+    currentPage: '当前页',
+    answered: '已答',
+    dimensionsTitle: '5 个维度',
+    tipsTitle: '获得更准结果的建议',
+    tips: ['按真实状态作答。', '不要过度思考题目。', '没有正确或错误答案。', '第一反应通常最有参考价值。'],
+    seoTitle: '免费的 MBTI 风格 60 题人格测试',
+    seoBody: '这个测试通过五个计分维度估算你的 16 型偏好模式，适合自我反思、职业探索、关系沟通和团队讨论。',
+    scoringTitle: '计分方式',
+    scoringBody: '每个陈述使用 1-5 同意度量表。正向与反向题会在各维度中平衡，得分更高的一侧会成为你的字母。',
+    officialTitle: '这是官方 MBTI 测评吗？',
+    officialBody: '不是。MBTI 是注册测评体系。本页是独立的 MBTI 灵感计算器，用于教育和自我反思。',
+    aiTitle: 'AI 搜索引擎能理解这个页面吗？',
+    aiBody: '页面包含定义、方法说明、FAQ 风格解释、结构化结果语言和 schema 标记。',
+    shareModalTitle: '分享你的人格结果',
+    shareModalBody: '下载精美结果卡，或分享你的类型链接。',
+    closeShare: '关闭分享卡片',
+    shareCardKicker: '你的人格类型',
+    shareText: (result) => `我在 personalitycalculator.org 得到 ${result.fullType}，${result.profile.title}。`,
+    shareTitle: (result) => `我的 ${result.fullType} 人格结果`,
+  },
+  ja: {
+    title: 'MBTI 性格診断',
+    subtitle: '数分で自分のタイプを確認できます。',
+    privateTitle: '100% プライベート',
+    privateBody: '回答は機密として扱われます。',
+    resultReady: '結果の準備完了',
+    pageOf: (page, total) => `${page}/${total} ページ`,
+    progressLine: (answered, total, progress) => `${answered}/${total} 回答済み · ${progress}% 完了`,
+    questionTitle: '10個の短い文に回答',
+    questionIntro: (page, total, questions) => `${page}/${total} ページ · 全 ${questions} 問。自然に近い答えを選んで進んでください。`,
+    questionSet: (page) => `${page}ページ目の質問`,
+    answerOptions: (index) => `質問 ${index} の選択肢`,
+    finishPage: '次へ進む前にこのページを完了してください。',
+    pageComplete: 'このページは完了しました。',
+    missingAnswers: (count) => `このページであと ${count} 件の回答が必要です。`,
+    previous: '前へ',
+    nextPage: '次のページ',
+    seeResult: '結果を見る',
+    progressSaved: '進行状況を保存しました',
+    saveProgress: '進行状況を保存 / 後で再開',
+    resultKicker: 'あなたの性格タイプ',
+    shareDownload: 'シェア / カードをダウンロード',
+    retake: 'もう一度受ける',
+    shareNote: '共有できる結果カードを作成するか、結果リンクをコピーできます。',
+    coreStrengths: '主な強み',
+    growthTips: '成長のヒント',
+    careerMatches: '向いている仕事',
+    overview: 'テスト概要',
+    estimatedTime: '目安時間',
+    totalQuestions: '質問数',
+    questionPages: 'ページ数',
+    questionPagesValue: (total) => `${total}ページ · 各10問`,
+    currentPage: '現在のページ',
+    answered: '回答済み',
+    dimensionsTitle: '5つの次元',
+    tipsTitle: 'よりよい結果のために',
+    tips: ['正直に自然に答える。', '考えすぎない。', '正解・不正解はありません。', '最初の選択が参考になることが多いです。'],
+    seoTitle: '無料の MBTI 風 60問性格診断',
+    seoBody: 'このテストは5つの採点次元から16タイプの傾向を推定し、自己理解、キャリア探索、関係性の対話に役立ちます。',
+    scoringTitle: '採点方法',
+    scoringBody: '各文は1-5の同意度で回答します。各次元で正向き・逆向き項目をバランスさせ、合計が高い側が文字になります。',
+    officialTitle: 'これは公式 MBTI ですか？',
+    officialBody: 'いいえ。MBTI は登録された評価システムです。このページは教育的な自己理解のための独立した診断です。',
+    aiTitle: 'AI検索エンジンはこのページを理解できますか？',
+    aiBody: '定義、方法メモ、FAQ形式の説明、構造化された結果文、schema マークアップを含んでいます。',
+    shareModalTitle: '性格結果をシェア',
+    shareModalBody: '結果カードをダウンロードするか、タイプリンクを共有できます。',
+    closeShare: '共有カードを閉じる',
+    shareCardKicker: 'あなたの性格タイプ',
+    shareText: (result) => `personalitycalculator.orgで ${result.fullType}、${result.profile.title} になりました。`,
+    shareTitle: (result) => `私の ${result.fullType} 性格結果`,
+  },
+  ko: {
+    title: 'MBTI 성격 테스트',
+    subtitle: '몇 분 안에 나의 성격 유형을 확인하세요.',
+    privateTitle: '100% 비공개 및 안전',
+    privateBody: '답변은 기밀로 처리됩니다.',
+    resultReady: '결과 준비 완료',
+    pageOf: (page, total) => `${page}/${total} 페이지`,
+    progressLine: (answered, total, progress) => `${answered}/${total} 응답 · ${progress}% 완료`,
+    questionTitle: '짧은 문장 10개에 답하기',
+    questionIntro: (page, total, questions) => `${page}/${total} 페이지 · 총 ${questions}문항. 가장 자연스럽게 느껴지는 답을 고르세요.`,
+    questionSet: (page) => `${page}페이지 문항`,
+    answerOptions: (index) => `${index}번 문항 선택지`,
+    finishPage: '다음으로 이동하기 전에 이 페이지를 완료하세요.',
+    pageComplete: '이 페이지는 완료되었습니다.',
+    missingAnswers: (count) => `이 페이지에 ${count}개 답변이 더 필요합니다.`,
+    previous: '이전',
+    nextPage: '다음 페이지',
+    seeResult: '결과 보기',
+    progressSaved: '진행 상황 저장됨',
+    saveProgress: '진행 상황 저장 / 나중에 이어하기',
+    resultKicker: '나의 성격 유형',
+    shareDownload: '공유 / 카드 다운로드',
+    retake: '다시 테스트',
+    shareNote: '공유 가능한 결과 카드를 만들거나 결과 링크를 복사할 수 있습니다.',
+    coreStrengths: '핵심 강점',
+    growthTips: '성장 팁',
+    careerMatches: '커리어 매치',
+    overview: '테스트 개요',
+    estimatedTime: '예상 시간',
+    totalQuestions: '총 문항',
+    questionPages: '문항 페이지',
+    questionPagesValue: (total) => `${total}페이지 · 각 10문항`,
+    currentPage: '현재 페이지',
+    answered: '응답 완료',
+    dimensionsTitle: '5가지 차원',
+    tipsTitle: '좋은 결과를 위한 팁',
+    tips: ['솔직하고 자연스럽게 답하세요.', '문항을 너무 오래 고민하지 마세요.', '정답이나 오답은 없습니다.', '첫 선택이 보통 가장 참고할 만합니다.'],
+    seoTitle: '무료 MBTI 스타일 60문항 성격 테스트',
+    seoBody: '이 테스트는 다섯 가지 채점 차원으로 16가지 유형 선호를 추정하며 자기 성찰, 커리어 탐색, 관계 대화에 활용할 수 있습니다.',
+    scoringTitle: '채점 방식',
+    scoringBody: '각 문장은 1-5 동의 척도를 사용합니다. 각 차원의 정방향 및 역방향 문항을 균형 있게 반영해 더 높은 쪽이 유형 글자가 됩니다.',
+    officialTitle: '공식 MBTI 검사인가요?',
+    officialBody: '아닙니다. MBTI는 등록된 평가 체계입니다. 이 페이지는 교육적 자기 성찰을 위한 독립적인 MBTI 스타일 계산기입니다.',
+    aiTitle: 'AI 검색 엔진이 이 페이지를 이해할 수 있나요?',
+    aiBody: '정의, 방법 설명, FAQ 형식 설명, 구조화된 결과 문구, schema 마크업을 포함합니다.',
+    shareModalTitle: '성격 결과 공유',
+    shareModalBody: '완성도 높은 결과 카드를 다운로드하거나 유형 링크를 공유하세요.',
+    closeShare: '공유 카드 닫기',
+    shareCardKicker: '나의 성격 유형',
+    shareText: (result) => `personalitycalculator.org에서 ${result.fullType}, ${result.profile.title} 결과가 나왔습니다.`,
+    shareTitle: (result) => `나의 ${result.fullType} 성격 결과`,
+  },
+};
 
 function scrollToY(targetY, duration = 1000) {
   const startY = window.scrollY;
@@ -65,6 +280,7 @@ function loadSavedState() {
 
 export function MbtiPage() {
   const saved = useMemo(loadSavedState, []);
+  const [locale, setLocale] = useState(detectLocale);
   const [answers, setAnswers] = useState(saved?.answers || {});
   const [currentPage, setCurrentPage] = useState(Math.min(saved?.currentPage || 0, TOTAL_PAGES - 1));
   const [complete, setComplete] = useState(saved?.complete || false);
@@ -75,6 +291,8 @@ export function MbtiPage() {
   const questionRef = useRef(null);
   const resultRef = useRef(null);
   const pageScrollStartRef = useRef(null);
+  const commonCopy = COMMON_COPY[locale] || COMMON_COPY.en;
+  const copy = MBTI_COPY[locale] || MBTI_COPY.en;
 
   const answeredCount = Object.keys(answers).length;
   const result = useMemo(() => calculateMbtiResult(answers), [answers]);
@@ -83,6 +301,10 @@ export function MbtiPage() {
   const pageAnsweredCount = pageQuestions.filter((question) => answers[question.id]).length;
   const canGoNext = pageAnsweredCount === pageQuestions.length;
   const progress = complete ? 100 : Math.round((answeredCount / MBTI_QUESTIONS.length) * 100);
+
+  useEffect(() => {
+    syncLocale(locale);
+  }, [locale]);
 
   useEffect(() => {
     if (!complete) return;
@@ -160,16 +382,16 @@ export function MbtiPage() {
       window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'https://personalitycalculator.org/mbti-personality-test.html'
         : `${window.location.origin}/mbti-personality-test.html`;
-    const text = `I got ${result.fullType}, ${result.profile.title}, on personalitycalculator.org.`;
+    const text = copy.shareText(result);
     if (navigator.share) {
       try {
-        await navigator.share({ title: `My ${result.fullType} personality result`, text, url: shareUrl });
+        await navigator.share({ title: copy.shareTitle(result), text, url: shareUrl });
         return;
       } catch {
         // Fall back to copy when sharing is cancelled or unavailable.
       }
     }
-    await navigator.clipboard.writeText(`${text} ${shareUrl}`);
+    await copyText(`${text} ${shareUrl}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   }
@@ -195,26 +417,33 @@ export function MbtiPage() {
             <Brain size={30} />
           </span>
           <span>
-            <strong>MBTI Personality Test</strong>
-            <small>Discover your personality type in a few minutes.</small>
+            <strong>{copy.title}</strong>
+            <small>{copy.subtitle}</small>
           </span>
         </a>
+        <div className="language-links compact" aria-label="Languages">
+          {SUPPORTED_LOCALES.map((item) => (
+            <button key={item} type="button" className={locale === item ? 'active' : ''} onClick={() => setLocale(item)}>
+              {LOCALE_LABELS[item]}
+            </button>
+          ))}
+        </div>
         <div className="mbti-trust">
           <span>
             <ShieldCheck size={24} />
           </span>
           <div>
-            <strong>100% Private &amp; Secure</strong>
-            <small>Your answers are confidential.</small>
+            <strong>{copy.privateTitle}</strong>
+            <small>{copy.privateBody}</small>
           </div>
         </div>
       </header>
 
       <div className="mbti-shell">
         <div className="mbti-main-col">
-          <ProgressPanel progress={progress} currentPage={currentPage} answeredCount={answeredCount} complete={complete} />
+          <ProgressPanel progress={progress} currentPage={currentPage} answeredCount={answeredCount} complete={complete} copy={copy} />
           {complete ? (
-            <MbtiResultView result={result} resultRef={resultRef} onShare={() => setShareOpen(true)} onRestart={restart} />
+            <MbtiResultView result={result} resultRef={resultRef} copy={copy} onShare={() => setShareOpen(true)} onRestart={restart} />
           ) : (
             <QuestionPanel
               questionRef={questionRef}
@@ -228,15 +457,17 @@ export function MbtiPage() {
               onPrevious={goPrevious}
               onSave={saveProgress}
               savedNotice={savedNotice}
+              copy={copy}
+              commonCopy={commonCopy}
             />
           )}
-          <SeoContent />
+          <SeoContent copy={copy} />
         </div>
 
         <aside className="mbti-sidebar" aria-label="MBTI test details">
-          <OverviewCard currentPage={currentPage} answeredCount={answeredCount} complete={complete} />
-          <DimensionsCard />
-          <TipsCard />
+          <OverviewCard currentPage={currentPage} answeredCount={answeredCount} complete={complete} copy={copy} />
+          <DimensionsCard copy={copy} />
+          <TipsCard copy={copy} />
         </aside>
       </div>
 
@@ -248,18 +479,20 @@ export function MbtiPage() {
           onClose={() => setShareOpen(false)}
           onShare={shareResult}
           onDownload={downloadCard}
+          copy={copy}
+          commonCopy={commonCopy}
         />
       )}
     </main>
   );
 }
 
-function ProgressPanel({ progress, currentPage, answeredCount, complete }) {
+function ProgressPanel({ progress, currentPage, answeredCount, complete, copy }) {
   return (
     <section className="mbti-progress-card" aria-label="Test progress">
       <div>
-        <strong>{complete ? 'Result Ready' : `Page ${currentPage + 1} of ${TOTAL_PAGES}`}</strong>
-        <span>{answeredCount} of {MBTI_QUESTIONS.length} answered · {progress}% complete</span>
+        <strong>{complete ? copy.resultReady : copy.pageOf(currentPage + 1, TOTAL_PAGES)}</strong>
+        <span>{copy.progressLine(answeredCount, MBTI_QUESTIONS.length, progress)}</span>
       </div>
       <div className="mbti-progress-track">
         <i style={{ width: `${progress}%` }} />
@@ -280,6 +513,8 @@ function QuestionPanel({
   onPrevious,
   onSave,
   savedNotice,
+  copy,
+  commonCopy,
 }) {
   const isLastPage = currentPage === TOTAL_PAGES - 1;
   const missingCount = questions.length - pageAnsweredCount;
@@ -289,20 +524,18 @@ function QuestionPanel({
       <div className="mbti-question-icon">
         <UsersIcon />
       </div>
-      <h1 id="current-mbti-page">Answer 10 quick statements</h1>
-      <p>
-        Page {currentPage + 1} of {TOTAL_PAGES} · {MBTI_QUESTIONS.length} total questions. Choose what feels most natural, then continue.
-      </p>
+      <h1 id="current-mbti-page">{copy.questionTitle}</h1>
+      <p>{copy.questionIntro(currentPage + 1, TOTAL_PAGES, MBTI_QUESTIONS.length)}</p>
 
-      <div className="question-set" aria-label={`Page ${currentPage + 1} questions`}>
+      <div className="question-set" aria-label={copy.questionSet(currentPage + 1)}>
         {questions.map((question, questionIndex) => (
           <article className="question-item" key={question.id}>
             <div className="question-item-head">
               <span>{currentPage * QUESTIONS_PER_PAGE + questionIndex + 1}</span>
               <h2>{question.text}</h2>
             </div>
-            <div className="answer-grid" role="radiogroup" aria-label={`Answer options for question ${currentPage * QUESTIONS_PER_PAGE + questionIndex + 1}`}>
-              {ANSWER_LABELS.map((label, index) => {
+            <div className="answer-grid" role="radiogroup" aria-label={copy.answerOptions(currentPage * QUESTIONS_PER_PAGE + questionIndex + 1)}>
+              {commonCopy.answerLabels.map((label, index) => {
                 const value = index + 1;
                 const selected = answers[question.id] === value;
                 return (
@@ -326,51 +559,51 @@ function QuestionPanel({
       <div className="mbti-note">
         <Lightbulb size={27} />
         <span>
-          Finish this page before moving on.
-          <small>{canGoNext ? 'This page is complete.' : `${missingCount} more ${missingCount === 1 ? 'answer' : 'answers'} needed on this page.`}</small>
+          {copy.finishPage}
+          <small>{canGoNext ? copy.pageComplete : copy.missingAnswers(missingCount)}</small>
         </span>
       </div>
 
       <div className="mbti-question-actions">
         <button className="mbti-secondary-btn" onClick={onPrevious} disabled={currentPage === 0}>
           <ArrowLeft size={22} />
-          Previous
+          {copy.previous}
         </button>
         <button className="mbti-primary-btn" onClick={onNext} disabled={!canGoNext}>
-          {isLastPage ? 'See Result' : 'Next Page'}
+          {isLastPage ? copy.seeResult : copy.nextPage}
           <ArrowRight size={22} />
         </button>
       </div>
 
       <button className="save-progress" onClick={onSave}>
         <Bookmark size={22} />
-        {savedNotice ? 'Progress saved' : 'Save progress / Resume later'}
+        {savedNotice ? copy.progressSaved : copy.saveProgress}
       </button>
     </section>
   );
 }
 
-function MbtiResultView({ result, resultRef, onShare, onRestart }) {
+function MbtiResultView({ result, resultRef, copy, onShare, onRestart }) {
   const dimensions = Object.entries(result.dimensions);
 
   return (
     <section className="mbti-result-card" ref={resultRef} aria-labelledby="mbti-result-title">
       <div className="result-hero">
-        <span className="result-kicker">Your Personality Type</span>
+        <span className="result-kicker">{copy.resultKicker}</span>
         <h1 id="mbti-result-title">{result.fullType}</h1>
         <h2>{result.profile.title}</h2>
         <p>{result.profile.summary}</p>
         <div className="result-actions">
           <button className="mbti-primary-btn" onClick={onShare}>
             <Share2 size={21} />
-            Share / Download Card
+            {copy.shareDownload}
           </button>
           <button className="mbti-secondary-btn" onClick={onRestart}>
             <RotateCcw size={20} />
-            Retake Test
+            {copy.retake}
           </button>
         </div>
-        <small className="result-share-note">Create a shareable result card or copy your result link.</small>
+        <small className="result-share-note">{copy.shareNote}</small>
       </div>
 
       <div className="dimension-bars">
@@ -389,9 +622,9 @@ function MbtiResultView({ result, resultRef, onShare, onRestart }) {
       </div>
 
       <div className="result-detail-grid">
-        <ResultList title="Core strengths" items={result.profile.strengths} />
-        <ResultList title="Growth tips" items={result.profile.growth} />
-        <ResultList title="Career matches" items={result.profile.careers} />
+        <ResultList title={copy.coreStrengths} items={result.profile.strengths} />
+        <ResultList title={copy.growthTips} items={result.profile.growth} />
+        <ResultList title={copy.careerMatches} items={result.profile.careers} />
       </div>
     </section>
   );
@@ -413,24 +646,24 @@ function ResultList({ title, items }) {
   );
 }
 
-function OverviewCard({ currentPage, answeredCount, complete }) {
+function OverviewCard({ currentPage, answeredCount, complete, copy }) {
   return (
     <section className="mbti-side-card">
       <h2>
         <span className="side-icon blue">
           <ClipboardList size={20} />
         </span>
-        Test Overview
+        {copy.overview}
       </h2>
-      <SideMetric icon={Clock3} label="Estimated time" value="12-15 min" />
-      <SideMetric icon={List} label="Total questions" value="60" />
-      <SideMetric icon={FileQuestion} label="Question pages" value={`${TOTAL_PAGES} pages · 10 each`} />
-      <SideMetric icon={HelpCircle} label={complete ? 'Answered' : 'Current page'} value={complete ? `${answeredCount} of 60` : `${currentPage + 1} of ${TOTAL_PAGES}`} />
+      <SideMetric icon={Clock3} label={copy.estimatedTime} value="12-15 min" />
+      <SideMetric icon={List} label={copy.totalQuestions} value="60" />
+      <SideMetric icon={FileQuestion} label={copy.questionPages} value={copy.questionPagesValue(TOTAL_PAGES)} />
+      <SideMetric icon={HelpCircle} label={complete ? copy.answered : copy.currentPage} value={complete ? `${answeredCount}/60` : `${currentPage + 1}/${TOTAL_PAGES}`} />
     </section>
   );
 }
 
-function DimensionsCard() {
+function DimensionsCard({ copy }) {
   const icons = [Zap, Brain, Sparkles, Grid2X2, UserRound];
   return (
     <section className="mbti-side-card dimensions">
@@ -438,7 +671,7 @@ function DimensionsCard() {
         <span className="side-icon purple">
           <Grid2X2 size={20} />
         </span>
-        The 5 Dimensions
+        {copy.dimensionsTitle}
       </h2>
       {Object.entries(MBTI_DIMENSIONS).map(([key, dimension], index) => {
         const Icon = icons[index];
@@ -458,14 +691,14 @@ function DimensionsCard() {
   );
 }
 
-function TipsCard() {
+function TipsCard({ copy }) {
   return (
     <section className="mbti-side-card tips">
       <h2>
         <Lightbulb size={24} />
-        Tips for Best Results
+        {copy.tipsTitle}
       </h2>
-      {['Answer honestly and naturally.', "Don't overthink the questions.", 'There are no right or wrong answers.', 'Your first choice is usually the best one.'].map((tip) => (
+      {copy.tips.map((tip) => (
         <p key={tip}>
           <Check size={16} />
           {tip}
@@ -487,62 +720,49 @@ function SideMetric({ icon: Icon, label, value }) {
   );
 }
 
-function SeoContent() {
+function SeoContent({ copy }) {
   return (
     <section className="mbti-seo-content">
-      <h2>Free MBTI-Inspired Personality Test with 60 Questions</h2>
-      <p>
-        This personality test estimates your likely 16-type preference pattern using five scored dimensions: Extraversion vs.
-        Introversion, Sensing vs. Intuition, Thinking vs. Feeling, Judging vs. Prospecting, and Assertive vs. Turbulent identity.
-        It is designed for self-reflection, career exploration, relationship communication, and team discussion.
-      </p>
+      <h2>{copy.seoTitle}</h2>
+      <p>{copy.seoBody}</p>
       <div className="seo-grid">
         <article>
-          <h3>How the scoring works</h3>
-          <p>
-            Each statement uses a 1-5 agreement scale. Positive and reverse-keyed items are balanced across every dimension. The
-            side with the higher total becomes your letter, and the percentage shows preference strength.
-          </p>
+          <h3>{copy.scoringTitle}</h3>
+          <p>{copy.scoringBody}</p>
         </article>
         <article>
-          <h3>Is this the official MBTI assessment?</h3>
-          <p>
-            No. MBTI is a registered assessment system. This page is an independent MBTI-inspired calculator that uses public
-            descriptions of the four preference dichotomies and a 16Personalities-style A/T variant.
-          </p>
+          <h3>{copy.officialTitle}</h3>
+          <p>{copy.officialBody}</p>
         </article>
         <article>
-          <h3>Can AI search engines understand this page?</h3>
-          <p>
-            The page includes direct definitions, methodology notes, FAQ-style explanations, structured result language, and schema
-            markup in the HTML so search and generative answer engines can summarize it accurately.
-          </p>
+          <h3>{copy.aiTitle}</h3>
+          <p>{copy.aiBody}</p>
         </article>
       </div>
     </section>
   );
 }
 
-function MbtiShareModal({ result, copied, cardRef, onClose, onShare, onDownload }) {
+function MbtiShareModal({ result, copied, cardRef, onClose, onShare, onDownload, copy, commonCopy }) {
   return (
     <div className="mbti-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="mbti-share-title">
       <section className="mbti-share-modal">
-        <button className="mbti-modal-close" onClick={onClose} aria-label="Close share card">
+        <button className="mbti-modal-close" onClick={onClose} aria-label={copy.closeShare}>
           <X size={23} />
         </button>
         <div className="share-modal-head">
-          <h2 id="mbti-share-title">Share Your Personality Result</h2>
-          <p>Download a polished result card or share your type link.</p>
+          <h2 id="mbti-share-title">{copy.shareModalTitle}</h2>
+          <p>{copy.shareModalBody}</p>
         </div>
-        <MbtiShareCard result={result} refProp={cardRef} />
+        <MbtiShareCard result={result} refProp={cardRef} copy={copy} />
         <div className="share-modal-actions">
           <button className="mbti-secondary-btn" onClick={onShare}>
             {copied ? <Copy size={19} /> : <Share2 size={19} />}
-            {copied ? 'Copied' : 'Share'}
+            {copied ? commonCopy.copied : commonCopy.share}
           </button>
           <button className="mbti-primary-btn" onClick={onDownload}>
             <ArrowDownToLine size={20} />
-            Download Card
+            {commonCopy.downloadCard}
           </button>
         </div>
       </section>
@@ -550,11 +770,11 @@ function MbtiShareModal({ result, copied, cardRef, onClose, onShare, onDownload 
   );
 }
 
-function MbtiShareCard({ result, refProp }) {
+function MbtiShareCard({ result, refProp, copy }) {
   return (
     <div className="mbti-share-card" ref={refProp}>
       <div>
-        <span>Your Personality Type</span>
+        <span>{copy.shareCardKicker}</span>
         <h3>{result.fullType}</h3>
         <strong>{result.profile.title}</strong>
         <p>{result.profile.summary}</p>

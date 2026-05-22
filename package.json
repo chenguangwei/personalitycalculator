@@ -5,7 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
+    "generate:catalog": "node scripts/generate-catalog.mjs",
+    "prebuild": "npm run generate:catalog",
     "build": "vite build",
+    "preverify": "npm run generate:catalog",
+    "verify": "node scripts/verify-site.mjs",
     "preview": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy"
   },

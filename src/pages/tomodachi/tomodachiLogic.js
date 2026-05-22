@@ -11,6 +11,7 @@ import {
   VALUE_OPTIONS,
   WORD_LABEL,
 } from './tomodachiData.js';
+import { detectLocale, normalizeLocale } from '../../i18n.js';
 
 function rangeForBucket(bucket) {
   return [
@@ -129,7 +130,7 @@ export function parseInitialValues() {
   return {
     values,
     region: params.get('region') === 'eu' ? 'eu' : 'us',
-    language: params.get('lang') === 'ja' ? 'ja' : 'en',
+    language: normalizeLocale(params.get('lang')) || detectLocale(),
   };
 }
 
