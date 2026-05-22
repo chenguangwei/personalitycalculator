@@ -163,6 +163,43 @@ export const TEST_TRANSLATIONS = {
     'introvert-vs-extrovert-test': {
       title: '内向与外向测试',
       description: '定位你的社交能量从内省型内向到表达型外向的自然位置。',
+      questions: [
+        '热闹的房间通常会让你更有能量。',
+        '连续社交几个小时后，你需要安静的独处时间。',
+        '你的社交能量很大程度上取决于房间里都有谁。',
+        '你经常在说出来的过程中想得更清楚。',
+        '相比许多简短寒暄，你更喜欢少数深入对话。',
+        '你可以享受一场聚会，同时第二天仍然想要独处。',
+        '你能自在地和陌生人开启对话。',
+        '面对重要决定时，你通常会先独自消化。',
+        '你可以在带领群体和安静观察之间切换。',
+        '独处太久会让你感到坐立不安。',
+        '你会保护自己的注意力，避免被嘈杂环境消耗。',
+        '理想的周末会平衡社交安排和私人时间。',
+      ],
+      dimensions: {
+        introvert: {
+          label: '内向',
+          title: '内省型内向者',
+          summary: '你通过空间、深度和私人思考来恢复能量。',
+          strengths: ['专注', '倾听', '独立思考'],
+          growth: ['在耗尽之前提前安排恢复时间'],
+        },
+        ambivert: {
+          label: '中间型',
+          title: '灵活型中间者',
+          summary: '你会根据情境在社交能量和独处需求之间切换。',
+          strengths: ['适应力', '范围感', '社交判断'],
+          growth: ['识别哪些场景最容易消耗你'],
+        },
+        extrovert: {
+          label: '外向',
+          title: '表达型外向者',
+          summary: '你从人群、对话和外部刺激中获得动力。',
+          strengths: ['主动性', '热情', '群体能量'],
+          growth: ['在填补每一段沉默前稍作停顿'],
+        },
+      },
     },
     'anime-personality-match': {
       title: '动漫人格匹配',
@@ -363,11 +400,27 @@ export function localizeTest(test, locale) {
   const category = fallback?.categories[test.category] || test.category;
   const title = translated?.title || translateTitle(test.title, locale);
   const description = translated?.description || fallback?.description(category) || test.description;
+  const localizedQuestions = Array.isArray(translated?.questions) && Array.isArray(test.questions)
+    ? test.questions.map((question, index) => ({
+        ...question,
+        text: translated.questions[index] || question.text,
+      }))
+    : test.questions;
+  const localizedDimensions = translated?.dimensions && Array.isArray(test.dimensions)
+    ? test.dimensions.map((dimension) => ({
+        ...dimension,
+        ...(translated.dimensions[dimension.key] || {}),
+      }))
+    : test.dimensions;
 
   return {
     ...test,
     title,
+    intro: test.intro ? description : test.intro,
     description,
-    searchText: `${test.searchText} ${title} ${description}`.toLowerCase(),
+    categoryLabel: category,
+    questions: localizedQuestions,
+    dimensions: localizedDimensions,
+    searchText: `${test.searchText || ''} ${title} ${description || ''}`.toLowerCase(),
   };
 }

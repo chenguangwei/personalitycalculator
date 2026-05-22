@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { TEST_LOADERS } from '../../data/generatedTestLoaders.js';
+import { localizeTest } from '../../data/testTranslations.js';
 import {
   COMMON_COPY,
   detectLocale,
@@ -85,12 +86,12 @@ const QUIZ_COPY = {
 
 const CATEGORY_THEMES = {
   Social: {
-    primary: '#2563eb',
-    secondary: '#14b8a6',
-    accent: '#f97316',
-    bgStart: '#eef6ff',
-    bgMid: '#f8fafc',
-    bgEnd: '#fff7ed',
+    primary: '#3157d5',
+    secondary: '#7c3aed',
+    accent: '#f59e0b',
+    bgStart: '#eef4ff',
+    bgMid: '#f8f7ff',
+    bgEnd: '#fff8ed',
   },
   Relationships: {
     primary: '#e11d48',
@@ -101,10 +102,10 @@ const CATEGORY_THEMES = {
     bgEnd: '#fff7ed',
   },
   Career: {
-    primary: '#0f766e',
-    secondary: '#2563eb',
+    primary: '#1d4ed8',
+    secondary: '#7c3aed',
     accent: '#f97316',
-    bgStart: '#ecfeff',
+    bgStart: '#eff6ff',
     bgMid: '#f8fafc',
     bgEnd: '#fff7ed',
   },
@@ -133,11 +134,11 @@ const CATEGORY_THEMES = {
     bgEnd: '#fffbeb',
   },
   Wellbeing: {
-    primary: '#059669',
-    secondary: '#0ea5e9',
+    primary: '#15803d',
+    secondary: '#4f46e5',
     accent: '#8b5cf6',
     bgStart: '#ecfdf5',
-    bgMid: '#f0f9ff',
+    bgMid: '#f7fee7',
     bgEnd: '#faf5ff',
   },
   Values: {
@@ -288,6 +289,7 @@ export function GenericTestPage({ slug }) {
   const resultCardRef = useRef(null);
   const commonCopy = COMMON_COPY[locale] || COMMON_COPY.en;
   const copy = QUIZ_COPY[locale] || QUIZ_COPY.en;
+  const localizedTest = useMemo(() => (test ? localizeTest(test, locale) : null), [test, locale]);
 
   useEffect(() => {
     syncLocale(locale);
@@ -335,29 +337,29 @@ export function GenericTestPage({ slug }) {
       return;
     }
 
-    if (!test || notFound) {
+    if (!localizedTest || notFound) {
       document.title = `${commonCopy.notFoundTitle} | Personality Calculator`;
       updateMeta('meta[name="description"]', 'content', commonCopy.notFoundBody);
       return;
     }
 
-    const title = `${test.title} | Free Personality Test`;
-    const description = `${test.intro} Answer ${test.questions.length} questions and get instant scored results.`;
-    const url = `https://personalitycalculator.org/${test.slug}.html`;
+    const title = `${localizedTest.title} | Free Personality Test`;
+    const description = `${localizedTest.intro || localizedTest.description} Answer ${localizedTest.questions.length} questions and get instant scored results.`;
+    const url = `https://personalitycalculator.org/${localizedTest.slug}.html`;
 
     document.title = title;
     updateMeta('meta[name="description"]', 'content', description);
     updateMeta('link[rel="canonical"]', 'href', url);
-    updateMeta('meta[property="og:title"]', 'content', test.title);
+    updateMeta('meta[property="og:title"]', 'content', localizedTest.title);
     updateMeta('meta[property="og:description"]', 'content', description);
     updateMeta('meta[property="og:url"]', 'content', url);
-    updateMeta('meta[name="twitter:title"]', 'content', test.title);
+    updateMeta('meta[name="twitter:title"]', 'content', localizedTest.title);
     updateMeta('meta[name="twitter:description"]', 'content', description);
-  }, [test, loading, notFound, commonCopy.loadingBody, commonCopy.notFoundBody, commonCopy.notFoundTitle]);
+  }, [localizedTest, loading, notFound, commonCopy.loadingBody, commonCopy.notFoundBody, commonCopy.notFoundTitle]);
 
   const answeredCount = Object.keys(answers).length;
   const allAnswered = test ? answeredCount === test.questions.length : false;
-  const result = useMemo(() => (test ? calculateResult(test, answers) : null), [test, answers]);
+  const result = useMemo(() => (localizedTest ? calculateResult(localizedTest, answers) : null), [localizedTest, answers]);
   const progress = test ? Math.round((answeredCount / test.questions.length) * 100) : 0;
   const theme = useMemo(() => getQuizTheme(test), [test]);
   const themeStyle = useMemo(() => themeToStyle(theme, complete ? result : null), [theme, complete, result]);
@@ -412,8 +414,8 @@ export function GenericTestPage({ slug }) {
       window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? `https://personalitycalculator.org/${test.slug}.html`
         : window.location.href;
-    const text = copy.shareText(result, test);
-    const filename = `${test.slug}-${result.primary.key}-result-card.png`;
+    const text = copy.shareText(result, localizedTest);
+    const filename = `${localizedTest.slug}-${result.primary.key}-result-card.png`;
     let resultCardImage = null;
     if (resultCardRef.current && result) {
       resultCardImage = await toPng(resultCardRef.current, {
@@ -426,7 +428,7 @@ export function GenericTestPage({ slug }) {
       const file = dataUrlToFile(resultCardImage, filename);
       if (!navigator.canShare || navigator.canShare({ files: [file] })) {
         try {
-          await navigator.share({ title: test.title, text, url, files: [file] });
+          await navigator.share({ title: localizedTest.title, text, url, files: [file] });
           return;
         } catch {
           // Fall back to regular web sharing or copying.
@@ -435,7 +437,7 @@ export function GenericTestPage({ slug }) {
     }
     if (navigator.share) {
       try {
-        await navigator.share({ title: test.title, text, url });
+        await navigator.share({ title: localizedTest.title, text, url });
         return;
       } catch {
         // Fall back to copying.
@@ -460,7 +462,7 @@ export function GenericTestPage({ slug }) {
       backgroundColor: theme.bgStart,
     });
     const link = document.createElement('a');
-    link.download = `${test.slug}-${result.primary.key}-result-card.png`;
+    link.download = `${localizedTest.slug}-${result.primary.key}-result-card.png`;
     link.href = dataUrl;
     link.click();
   }
@@ -491,20 +493,20 @@ export function GenericTestPage({ slug }) {
         <div>
           <div className="quiz-kicker">
             <Sparkles size={16} />
-            {test.category}
+            {localizedTest.categoryLabel || localizedTest.category}
           </div>
-          <h1>{test.title}</h1>
-          <p>{test.intro}</p>
-          {test.notice && <p className="quiz-notice">{test.notice}</p>}
+          <h1>{localizedTest.title}</h1>
+          <p>{localizedTest.intro || localizedTest.description}</p>
+          {localizedTest.notice && <p className="quiz-notice">{localizedTest.notice}</p>}
         </div>
         <aside className="quiz-progress-card">
           <div>
             <Clock3 size={18} />
-            {formatDuration(test.time, locale)}
+            {formatDuration(localizedTest.time, locale)}
           </div>
           <div>
             <FileQuestion size={18} />
-            {test.questions.length} {commonCopy.questions}
+            {localizedTest.questions.length} {commonCopy.questions}
           </div>
           <strong>{copy.completeLabel(progress)}</strong>
           <span className="quiz-progress-track">
@@ -513,16 +515,16 @@ export function GenericTestPage({ slug }) {
         </aside>
       </section>
 
-      <section className="quiz-shell" aria-label={`${test.title} questions`}>
+      <section className="quiz-shell" aria-label={`${localizedTest.title} questions`}>
         <div className="quiz-question-list">
-          {test.questions.map((question, index) => (
+          {localizedTest.questions.map((question, index) => (
             <article className="quiz-question" key={question.id}>
               <div className="quiz-question-head">
                 <span>{index + 1}</span>
                 <h2>{question.text}</h2>
               </div>
               <div className="quiz-answer-row" role="radiogroup" aria-label={copy.questionLabel(index + 1)}>
-                {localizedAnswerLabels(test.answerLabels, locale).map((label, labelIndex) => {
+                {localizedAnswerLabels(localizedTest.answerLabels, locale).map((label, labelIndex) => {
                   const value = labelIndex + 1;
                   const selected = answers[question.id] === value;
                   return (
@@ -546,7 +548,7 @@ export function GenericTestPage({ slug }) {
 
         <aside className="quiz-side-panel">
           <div className="quiz-sticky-panel">
-            <strong>{copy.answeredLabel(answeredCount, test.questions.length)}</strong>
+            <strong>{copy.answeredLabel(answeredCount, localizedTest.questions.length)}</strong>
             <p>{allAnswered ? copy.progressReady : copy.progressLocked}</p>
             <button type="button" className="quiz-primary" disabled={!allAnswered} onClick={finishTest}>
               <Check size={18} />
@@ -581,7 +583,7 @@ export function GenericTestPage({ slug }) {
               </div>
               <div className="quiz-card-footer">
                 <Brain size={17} />
-                <span>{test.title}</span>
+                <span>{localizedTest.title}</span>
                 <strong>personalitycalculator.org</strong>
               </div>
             </article>
