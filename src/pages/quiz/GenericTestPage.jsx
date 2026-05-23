@@ -10,8 +10,10 @@ import {
   RotateCcw,
   Share2,
   Sparkles,
+  X,
 } from 'lucide-react';
 import { toPng } from 'html-to-image';
+import { TESTS } from '../../data/tests.jsx';
 import { TEST_LOADERS } from '../../data/generatedTestLoaders.js';
 import { localizeTest } from '../../data/testTranslations.js';
 import {
@@ -35,6 +37,16 @@ const QUIZ_COPY = {
     strengths: 'Strengths',
     growthFocus: 'Growth focus',
     scoreBreakdown: 'Score breakdown',
+    questionsOverview: 'Questions overview',
+    questionsOverviewBody: 'Preview the prompts before you answer, then move through them at your own pace.',
+    resultMeaning: 'What this result means',
+    resultMeaningBody: (result) =>
+      `${result.primary.title} is your strongest pattern in this test. Use it as a reflection prompt, then compare it with your real behavior across different situations.`,
+    moreQuizzes: 'More quizzes to try next',
+    shareModalTitle: 'Share your result card',
+    shareModalBody: 'Preview your result card, download it, or copy a shareable result text.',
+    closeShare: 'Close share card',
+    copyShareText: 'Copy Share Text',
     shareText: (result, test) => `I got ${result.primary.title} on the ${test.title}.`,
     completeLabel: (progress) => `${progress}% complete`,
     answeredLabel: (answered, total) => `${answered} of ${total} answered`,
@@ -49,6 +61,16 @@ const QUIZ_COPY = {
     strengths: '优势',
     growthFocus: '成长重点',
     scoreBreakdown: '分数明细',
+    questionsOverview: '题目预览',
+    questionsOverviewBody: '答题前先快速浏览问题，再按自己的节奏完成测试。',
+    resultMeaning: '这个结果代表什么',
+    resultMeaningBody: (result) =>
+      `${result.primary.title} 是你在这个测试中最强的模式。把它当作自我反思提示，再结合不同情境中的真实行为来看。`,
+    moreQuizzes: '继续探索这些测试',
+    shareModalTitle: '分享你的结果卡片',
+    shareModalBody: '预览结果卡片，可下载图片，也可以复制分享文案。',
+    closeShare: '关闭分享卡片',
+    copyShareText: '复制分享文案',
     shareText: (result, test) => `我在 ${test.title} 中得到 ${result.primary.title}。`,
     completeLabel: (progress) => `${progress}% 完成`,
     answeredLabel: (answered, total) => `${answered}/${total} 已答`,
@@ -63,6 +85,16 @@ const QUIZ_COPY = {
     strengths: '強み',
     growthFocus: '成長ポイント',
     scoreBreakdown: 'スコア内訳',
+    questionsOverview: '質問の概要',
+    questionsOverviewBody: '回答前に質問を確認し、自分のペースで進められます。',
+    resultMeaning: 'この結果の意味',
+    resultMeaningBody: (result) =>
+      `${result.primary.title} は、このテストで最も強く出たパターンです。固定的なラベルではなく、実際の行動を振り返る手がかりとして使ってください。`,
+    moreQuizzes: '次に試したいテスト',
+    shareModalTitle: '結果カードをシェア',
+    shareModalBody: '結果カードを確認し、画像をダウンロードするか共有テキストをコピーできます。',
+    closeShare: '共有カードを閉じる',
+    copyShareText: '共有テキストをコピー',
     shareText: (result, test) => `${test.title}で ${result.primary.title} になりました。`,
     completeLabel: (progress) => `${progress}% 完了`,
     answeredLabel: (answered, total) => `${answered}/${total} 回答済み`,
@@ -77,6 +109,16 @@ const QUIZ_COPY = {
     strengths: '강점',
     growthFocus: '성장 포인트',
     scoreBreakdown: '점수 분석',
+    questionsOverview: '문항 미리보기',
+    questionsOverviewBody: '답하기 전에 질문 흐름을 확인하고 내 속도에 맞춰 진행하세요.',
+    resultMeaning: '이 결과의 의미',
+    resultMeaningBody: (result) =>
+      `${result.primary.title}은 이 테스트에서 가장 강하게 나타난 패턴입니다. 고정된 라벨이 아니라 실제 행동을 돌아보는 단서로 사용하세요.`,
+    moreQuizzes: '다음에 해볼 테스트',
+    shareModalTitle: '결과 카드 공유',
+    shareModalBody: '결과 카드를 미리 보고 이미지를 다운로드하거나 공유 문구를 복사하세요.',
+    closeShare: '공유 카드 닫기',
+    copyShareText: '공유 문구 복사',
     shareText: (result, test) => `${test.title}에서 ${result.primary.title} 결과가 나왔습니다.`,
     completeLabel: (progress) => `${progress}% 완료`,
     answeredLabel: (answered, total) => `${answered}/${total} 응답`,
@@ -228,17 +270,6 @@ function themeToStyle(theme, result) {
   };
 }
 
-function dataUrlToFile(dataUrl, filename) {
-  const [header, data] = dataUrl.split(',');
-  const mime = header.match(/data:(.*?);base64/)?.[1] || 'image/png';
-  const binary = atob(data);
-  const bytes = new Uint8Array(binary.length);
-  for (let index = 0; index < binary.length; index += 1) {
-    bytes[index] = binary.charCodeAt(index);
-  }
-  return new File([bytes], filename, { type: mime });
-}
-
 export function calculateResult(test, answers) {
   const totals = Object.fromEntries(
     test.dimensions.map((dimension) => [
@@ -278,6 +309,28 @@ export function calculateResult(test, answers) {
   };
 }
 
+function getRelatedTests(currentTest, locale) {
+  if (!currentTest) return [];
+  const normalizedTitle = currentTest.title.toLowerCase();
+  const keywordTokens = new Set(
+    `${currentTest.slug} ${currentTest.category} ${normalizedTitle}`
+      .split(/[^a-z0-9]+/i)
+      .filter((token) => token.length > 3),
+  );
+
+  return TESTS.filter((test) => test.slug !== currentTest.slug)
+    .map((test) => {
+      const haystack = `${test.slug} ${test.title} ${test.category} ${test.searchText}`.toLowerCase();
+      const keywordScore = [...keywordTokens].reduce((score, token) => score + (haystack.includes(token) ? 1 : 0), 0);
+      const categoryScore = test.category === currentTest.category ? 4 : 0;
+      return { test, score: categoryScore + keywordScore };
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score || a.test.title.localeCompare(b.test.title))
+    .slice(0, 4)
+    .map(({ test }) => localizeTest(test, locale));
+}
+
 export function GenericTestPage({ slug }) {
   const [locale, setLocale] = useState(detectLocale);
   const [test, setTest] = useState(null);
@@ -286,7 +339,12 @@ export function GenericTestPage({ slug }) {
   const [answers, setAnswers] = useState({});
   const [complete, setComplete] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [cardImageReady, setCardImageReady] = useState(false);
   const resultCardRef = useRef(null);
+  const cardImageRef = useRef(null);
+  const cardImageKeyRef = useRef('');
+  const cardRenderPromiseRef = useRef(null);
   const commonCopy = COMMON_COPY[locale] || COMMON_COPY.en;
   const copy = QUIZ_COPY[locale] || QUIZ_COPY.en;
   const localizedTest = useMemo(() => (test ? localizeTest(test, locale) : null), [test, locale]);
@@ -363,6 +421,46 @@ export function GenericTestPage({ slug }) {
   const progress = test ? Math.round((answeredCount / test.questions.length) * 100) : 0;
   const theme = useMemo(() => getQuizTheme(test), [test]);
   const themeStyle = useMemo(() => themeToStyle(theme, complete ? result : null), [theme, complete, result]);
+  const answerLabels = localizedTest ? localizedAnswerLabels(localizedTest.answerLabels, locale) : [];
+  const relatedTests = useMemo(() => getRelatedTests(localizedTest, locale), [localizedTest, locale]);
+
+  useEffect(() => {
+    if (!test || complete || answeredCount !== test.questions.length) return;
+    setComplete(true);
+  }, [answeredCount, complete, test]);
+
+  useEffect(() => {
+    cardImageRef.current = null;
+    cardImageKeyRef.current = '';
+    cardRenderPromiseRef.current = null;
+    setCardImageReady(false);
+
+    if (!complete || !result || !localizedTest) return undefined;
+
+    const preload = () => {
+      getResultCardImage().catch(() => {
+        setCardImageReady(false);
+      });
+    };
+
+    const timeoutId = window.setTimeout(preload, 120);
+    return () => window.clearTimeout(timeoutId);
+  }, [complete, localizedTest, result, theme.bgStart]);
+
+  useEffect(() => {
+    if (!shareModalOpen) return undefined;
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setShareModalOpen(false);
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.body.style.overflow = '';
+    };
+  }, [shareModalOpen]);
 
   if (loading) {
     return (
@@ -392,58 +490,107 @@ export function GenericTestPage({ slug }) {
 
   function answerQuestion(questionId, value) {
     const nextAnswers = { ...answers, [questionId]: value };
+    const nextAnsweredCount = Object.keys(nextAnswers).length;
+    const nextComplete = nextAnsweredCount === test.questions.length;
     setAnswers(nextAnswers);
-    localStorage.setItem(storageKey(test.slug), JSON.stringify({ answers: nextAnswers, updatedAt: new Date().toISOString() }));
+    localStorage.setItem(
+      storageKey(test.slug),
+      JSON.stringify({ answers: nextAnswers, complete: nextComplete, updatedAt: new Date().toISOString() }),
+    );
+    if (nextComplete && !complete) {
+      revealResult({ scroll: true });
+    }
+  }
+
+  function revealResult({ scroll = false } = {}) {
+    setComplete(true);
+    if (scroll) {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => document.getElementById('quiz-result')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+      });
+    }
   }
 
   function finishTest() {
     if (!allAnswered) return;
-    setComplete(true);
-    requestAnimationFrame(() => document.getElementById('quiz-result')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    revealResult({ scroll: true });
   }
 
   function restart() {
     localStorage.removeItem(storageKey(test.slug));
     setAnswers({});
     setComplete(false);
+    setShareModalOpen(false);
+    setCardImageReady(false);
+    cardImageRef.current = null;
+    cardImageKeyRef.current = '';
+    cardRenderPromiseRef.current = null;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  async function shareResult() {
-    const url =
-      window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? `https://personalitycalculator.org/${test.slug}.html`
-        : window.location.href;
-    const text = copy.shareText(result, localizedTest);
-    const filename = `${localizedTest.slug}-${result.primary.key}-result-card.png`;
-    let resultCardImage = null;
-    if (resultCardRef.current && result) {
-      resultCardImage = await toPng(resultCardRef.current, {
-        cacheBust: true,
-        pixelRatio: 2,
-        backgroundColor: theme.bgStart,
-      });
+  function getShareUrl() {
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return `https://personalitycalculator.org/${test.slug}.html`;
     }
-    if (navigator.share && resultCardImage && typeof File !== 'undefined') {
-      const file = dataUrlToFile(resultCardImage, filename);
-      if (!navigator.canShare || navigator.canShare({ files: [file] })) {
-        try {
-          await navigator.share({ title: localizedTest.title, text, url, files: [file] });
-          return;
-        } catch {
-          // Fall back to regular web sharing or copying.
-        }
+    return window.location.href;
+  }
+
+  function getShareText() {
+    return `${copy.shareText(result, localizedTest)} ${getShareUrl()}`;
+  }
+
+  function getResultCardFilename() {
+    return `${localizedTest.slug}-${result.primary.key}-result-card.png`;
+  }
+
+  function getResultCardCacheKey() {
+    return [localizedTest.slug, locale, result.primary.key, result.primary.percent, theme.bgStart].join(':');
+  }
+
+  async function getResultCardImage() {
+    if (!resultCardRef.current || !result || !localizedTest) return null;
+
+    const cacheKey = getResultCardCacheKey();
+    if (cardImageRef.current && cardImageKeyRef.current === cacheKey) {
+      return cardImageRef.current;
+    }
+
+    if (cardRenderPromiseRef.current && cardImageKeyRef.current === cacheKey) {
+      return cardRenderPromiseRef.current;
+    }
+
+    cardImageKeyRef.current = cacheKey;
+    const renderPromise = toPng(resultCardRef.current, {
+      cacheBust: false,
+      pixelRatio: 1.5,
+      backgroundColor: theme.bgStart,
+    }).then((dataUrl) => {
+      if (cardImageKeyRef.current === cacheKey) {
+        cardImageRef.current = dataUrl;
+        setCardImageReady(true);
+      }
+      return dataUrl;
+    });
+
+    cardRenderPromiseRef.current = renderPromise;
+    try {
+      return await renderPromise;
+    } finally {
+      if (cardRenderPromiseRef.current === renderPromise) {
+        cardRenderPromiseRef.current = null;
       }
     }
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: localizedTest.title, text, url });
-        return;
-      } catch {
-        // Fall back to copying.
-      }
-    }
-    await copyText(`${text} ${url}`);
+  }
+
+  function shareResult() {
+    setShareModalOpen(true);
+    getResultCardImage().catch(() => {
+      setCardImageReady(false);
+    });
+  }
+
+  async function copyShareText() {
+    await copyText(getShareText());
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
@@ -455,14 +602,10 @@ export function GenericTestPage({ slug }) {
   }
 
   async function downloadResultCard() {
-    if (!resultCardRef.current || !result) return;
-    const dataUrl = await toPng(resultCardRef.current, {
-      cacheBust: true,
-      pixelRatio: 2,
-      backgroundColor: theme.bgStart,
-    });
+    const dataUrl = await getResultCardImage();
+    if (!dataUrl) return;
     const link = document.createElement('a');
-    link.download = `${localizedTest.slug}-${result.primary.key}-result-card.png`;
+    link.download = getResultCardFilename();
     link.href = dataUrl;
     link.click();
   }
@@ -515,6 +658,21 @@ export function GenericTestPage({ slug }) {
         </aside>
       </section>
 
+      <section className="quiz-overview" aria-labelledby="quiz-overview-title">
+        <div>
+          <h2 id="quiz-overview-title">{copy.questionsOverview}</h2>
+          <p>{copy.questionsOverviewBody}</p>
+        </div>
+        <ol>
+          {localizedTest.questions.slice(0, 6).map((question, index) => (
+            <li key={question.id}>
+              <span>{index + 1}</span>
+              <strong>{question.text}</strong>
+            </li>
+          ))}
+        </ol>
+      </section>
+
       <section className="quiz-shell" aria-label={`${localizedTest.title} questions`}>
         <div className="quiz-question-list">
           {localizedTest.questions.map((question, index) => (
@@ -524,7 +682,7 @@ export function GenericTestPage({ slug }) {
                 <h2>{question.text}</h2>
               </div>
               <div className="quiz-answer-row" role="radiogroup" aria-label={copy.questionLabel(index + 1)}>
-                {localizedAnswerLabels(localizedTest.answerLabels, locale).map((label, labelIndex) => {
+                {answerLabels.map((label, labelIndex) => {
                   const value = labelIndex + 1;
                   const selected = answers[question.id] === value;
                   return (
@@ -566,26 +724,7 @@ export function GenericTestPage({ slug }) {
         <section className="quiz-result" id="quiz-result" aria-labelledby="quiz-result-title">
           <div className="quiz-result-main">
             <article className="quiz-result-card" ref={resultCardRef}>
-              <div className="quiz-result-card-top">
-                <span className="quiz-result-label">{copy.strongestMatch}</span>
-                <strong>{result.primary.percent}%</strong>
-              </div>
-              <h2 id="quiz-result-title">{result.primary.title}</h2>
-              {result.secondary && <h3>{copy.secondaryPattern}: {result.secondary.title}</h3>}
-              <p>{result.primary.summary}</p>
-              <div className="quiz-result-theme-bar">
-                <i style={{ width: `${result.primary.percent}%` }} />
-              </div>
-              <div className="quiz-result-traits">
-                {result.primary.strengths.slice(0, 3).map((strength) => (
-                  <span key={strength}>{strength}</span>
-                ))}
-              </div>
-              <div className="quiz-card-footer">
-                <Brain size={17} />
-                <span>{localizedTest.title}</span>
-                <strong>personalitycalculator.org</strong>
-              </div>
+              <ResultCardContent result={result} localizedTest={localizedTest} copy={copy} titleId="quiz-result-title" />
             </article>
             <div className="quiz-result-actions">
               <button type="button" className="quiz-primary" onClick={shareResult}>
@@ -596,7 +735,7 @@ export function GenericTestPage({ slug }) {
                 <Clipboard size={18} />
                 {copied ? commonCopy.copied : commonCopy.copySummary}
               </button>
-              <button type="button" className="quiz-secondary" onClick={downloadResultCard}>
+              <button type="button" className="quiz-secondary" aria-busy={!cardImageReady} onClick={downloadResultCard}>
                 <ArrowDownToLine size={18} />
                 {commonCopy.downloadCard}
               </button>
@@ -605,6 +744,10 @@ export function GenericTestPage({ slug }) {
           <div className="quiz-insight-grid">
             <ResultList title={copy.strengths} items={result.primary.strengths} />
             <ResultList title={copy.growthFocus} items={result.primary.growth} />
+            <article className="quiz-result-meaning">
+              <h3>{copy.resultMeaning}</h3>
+              <p>{copy.resultMeaningBody(result)}</p>
+            </article>
           </div>
           <div className="quiz-score-card">
             <h3>{copy.scoreBreakdown}</h3>
@@ -620,9 +763,75 @@ export function GenericTestPage({ slug }) {
               </div>
             ))}
           </div>
+          {relatedTests.length > 0 && (
+            <section className="quiz-related" aria-labelledby="quiz-related-title">
+              <h3 id="quiz-related-title">{copy.moreQuizzes}</h3>
+              <div>
+                {relatedTests.map((relatedTest) => (
+                  <a href={relatedTest.href} key={relatedTest.href}>
+                    <strong>{relatedTest.title}</strong>
+                    <span>{formatDuration(relatedTest.time, locale)} · {relatedTest.questions} {commonCopy.questions}</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          )}
         </section>
       )}
+      {shareModalOpen && complete && (
+        <div className="quiz-share-backdrop" role="dialog" aria-modal="true" aria-labelledby="quiz-share-title">
+          <section className="quiz-share-modal">
+            <button type="button" className="quiz-share-close" onClick={() => setShareModalOpen(false)} aria-label={copy.closeShare}>
+              <X size={20} />
+            </button>
+            <div className="quiz-share-head">
+              <h2 id="quiz-share-title">{copy.shareModalTitle}</h2>
+              <p>{copy.shareModalBody}</p>
+            </div>
+            <article className="quiz-result-card quiz-share-preview">
+              <ResultCardContent result={result} localizedTest={localizedTest} copy={copy} titleId="quiz-share-card-title" />
+            </article>
+            <div className="quiz-share-actions">
+              <button type="button" className="quiz-primary" aria-busy={!cardImageReady} onClick={downloadResultCard}>
+                <ArrowDownToLine size={18} />
+                {commonCopy.downloadCard}
+              </button>
+              <button type="button" className="quiz-secondary" onClick={copyShareText}>
+                <Clipboard size={18} />
+                {copied ? commonCopy.copied : copy.copyShareText}
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </main>
+  );
+}
+
+function ResultCardContent({ result, localizedTest, copy, titleId }) {
+  return (
+    <>
+      <div className="quiz-result-card-top">
+        <span className="quiz-result-label">{copy.strongestMatch}</span>
+        <strong>{result.primary.percent}%</strong>
+      </div>
+      <h2 id={titleId}>{result.primary.title}</h2>
+      {result.secondary && <h3>{copy.secondaryPattern}: {result.secondary.title}</h3>}
+      <p>{result.primary.summary}</p>
+      <div className="quiz-result-theme-bar">
+        <i style={{ width: `${result.primary.percent}%` }} />
+      </div>
+      <div className="quiz-result-traits">
+        {result.primary.strengths.slice(0, 3).map((strength) => (
+          <span key={strength}>{strength}</span>
+        ))}
+      </div>
+      <div className="quiz-card-footer">
+        <Brain size={17} />
+        <span>{localizedTest.title}</span>
+        <strong>personalitycalculator.org</strong>
+      </div>
+    </>
   );
 }
 
