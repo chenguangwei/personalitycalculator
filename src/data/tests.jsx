@@ -76,6 +76,18 @@ export const TESTS = [
     searchText: 'mbti test 16 personality type introversion extraversion intuition sensing thinking feeling judging perceiving assertive turbulent strengths careers',
   },
   {
+    slug: 'which-infp-avatar-represents-you',
+    title: 'MBTI Avatar Cards',
+    description: 'Explore 32 avatar cards for all 16 MBTI types, with visual traits and answer tendencies.',
+    category: 'Popular',
+    icon: Sparkles,
+    iconClass: 'violet',
+    time: '5 min',
+    questions: 32,
+    href: '/which-infp-avatar-represents-you.html',
+    searchText: 'mbti avatar cards 16 personality types infp intj enfp image visual personality analysis answer tendencies avatar versions',
+  },
+  {
     slug: 'tomodachi-life-personality-calculator',
     title: 'Tomodachi Life Personality Calculator',
     description: 'Get your unique Tomodachi Life personality and shareable profile card.',

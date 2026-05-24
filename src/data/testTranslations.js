@@ -148,6 +148,10 @@ export const TEST_TRANSLATIONS = {
       title: 'MBTI 人格测试',
       description: '通过完整的 60 题测评，了解你的 16 型人格偏好。',
     },
+    'which-infp-avatar-represents-you': {
+      title: 'MBTI 形象卡片',
+      description: '浏览 16 型人格的 32 张头像形象，查看每种人格的形象表现、详细分析和作答倾向。',
+    },
     'tomodachi-life-personality-calculator': {
       title: 'Tomodachi Life 性格计算器',
       description: '生成你的 Tomodachi Life 独特性格，并保存可分享的个人资料卡。',
@@ -283,6 +287,10 @@ export const TEST_TRANSLATIONS = {
       title: 'MBTI 性格診断',
       description: '60問の診断で、自分の16タイプ傾向を確認できます。',
     },
+    'which-infp-avatar-represents-you': {
+      title: 'MBTIアバターカード',
+      description: '16タイプの32枚のアバターで、各タイプの見た目、詳しい分析、回答傾向を確認できます。',
+    },
     'tomodachi-life-personality-calculator': {
       title: 'Tomodachi Life 性格計算機',
       description: 'あなたのTomodachi Life性格を見つけ、共有できるプロフィールカードを作成します。',
@@ -332,6 +340,10 @@ export const TEST_TRANSLATIONS = {
     'mbti-personality-test': {
       title: 'MBTI 성격 테스트',
       description: '60문항 전체 테스트로 나의 16가지 성격 유형 선호를 확인하세요.',
+    },
+    'which-infp-avatar-represents-you': {
+      title: 'MBTI 아바타 카드',
+      description: '16가지 유형의 32개 아바타로 각 성격의 시각적 특징, 상세 분석, 응답 경향을 확인하세요.',
     },
     'tomodachi-life-personality-calculator': {
       title: 'Tomodachi Life 성격 계산기',

@@ -83,6 +83,7 @@ const MBTI_COPY = {
     avatarTitle: 'Explore MBTI avatar versions',
     avatarBody: 'Compare 32 visual avatar cards for all 16 types, including two INFP versions designed for result-card analysis.',
     avatarCta: 'Open avatar cards',
+    avatarNav: 'Avatar Cards',
     shareModalTitle: 'Share Your Personality Result',
     shareModalBody: 'Download a polished result card or share your type link.',
     closeShare: 'Close share card',
@@ -138,6 +139,7 @@ const MBTI_COPY = {
     avatarTitle: '查看 MBTI 头像形象版本',
     avatarBody: '浏览 16 型人格的 32 张视觉卡片，包括两个可用于 INFP 分析卡的形象版本。',
     avatarCta: '打开形象卡片',
+    avatarNav: 'MBTI 形象卡片',
     shareModalTitle: '分享你的人格结果',
     shareModalBody: '下载精美结果卡，或分享你的类型链接。',
     closeShare: '关闭分享卡片',
@@ -193,6 +195,7 @@ const MBTI_COPY = {
     avatarTitle: 'MBTIアバター版を見る',
     avatarBody: '16タイプの32枚のビジュアルカードと、INFP向けの2つの分析用アバターを比較できます。',
     avatarCta: 'アバターカードを開く',
+    avatarNav: 'アバターカード',
     shareModalTitle: '性格結果をシェア',
     shareModalBody: '結果カードをダウンロードするか、タイプリンクを共有できます。',
     closeShare: '共有カードを閉じる',
@@ -248,6 +251,7 @@ const MBTI_COPY = {
     avatarTitle: 'MBTI 아바타 버전 보기',
     avatarBody: '16가지 유형의 32개 비주얼 카드와 INFP 분석 카드용 두 가지 아바타를 비교하세요.',
     avatarCta: '아바타 카드 열기',
+    avatarNav: '아바타 카드',
     shareModalTitle: '성격 결과 공유',
     shareModalBody: '완성도 높은 결과 카드를 다운로드하거나 유형 링크를 공유하세요.',
     closeShare: '공유 카드 닫기',
@@ -433,12 +437,18 @@ export function MbtiPage() {
             <small>{copy.subtitle}</small>
           </span>
         </a>
-        <div className="language-links compact" aria-label="Languages">
-          {SUPPORTED_LOCALES.map((item) => (
-            <button key={item} type="button" className={locale === item ? 'active' : ''} onClick={() => setLocale(item)}>
-              {LOCALE_LABELS[item]}
-            </button>
-          ))}
+        <div className="mbti-header-tools">
+          <div className="language-links compact" aria-label="Languages">
+            {SUPPORTED_LOCALES.map((item) => (
+              <button key={item} type="button" className={locale === item ? 'active' : ''} onClick={() => setLocale(item)}>
+                {LOCALE_LABELS[item]}
+              </button>
+            ))}
+          </div>
+          <a className="mbti-avatar-entry" href="/which-infp-avatar-represents-you.html">
+            <Sparkles size={18} />
+            <span>{copy.avatarNav}</span>
+          </a>
         </div>
         <div className="mbti-trust">
           <span>
