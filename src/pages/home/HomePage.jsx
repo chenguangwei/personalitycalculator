@@ -34,6 +34,7 @@ export function HomePage() {
   const [suggestionStatus, setSuggestionStatus] = useState('');
   const [savedSuggestions, setSavedSuggestions] = useState([]);
   const searchRef = useRef(null);
+  const testSectionRef = useRef(null);
   const copy = LOCALE_COPY[locale];
   const discoveryCopy = DISCOVERY_COPY[locale] || DISCOVERY_COPY.en;
   const localizedTests = useMemo(() => TESTS.map((test) => localizeTest(test, locale)), [locale]);
@@ -120,6 +121,13 @@ export function HomePage() {
     }
   }
 
+  function selectCategory(label) {
+    setActiveCategory(label);
+    requestAnimationFrame(() => {
+      testSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
   return (
     <main className="landing-app">
       <header className="site-header">
@@ -162,7 +170,8 @@ export function HomePage() {
                 key={label}
                 type="button"
                 className={activeCategory === label ? 'active' : ''}
-                onClick={() => setActiveCategory(label)}
+                aria-pressed={activeCategory === label}
+                onClick={() => selectCategory(label)}
               >
                 <Icon size={23} />
                 <span>{categoryLabel(label, copy)}</span>
@@ -263,7 +272,7 @@ export function HomePage() {
             </div>
           </section>
 
-          <section className="test-section">
+          <section className="test-section" ref={testSectionRef}>
             <div className="section-head">
               <h2>{activeCategory === 'All' ? copy.library : copy.categoryTitle(categoryLabel(activeCategory, copy))}</h2>
               <button type="button" onClick={() => { setActiveCategory('All'); setQuery(''); }}>

@@ -7,7 +7,7 @@ Personality Calculator provides free personality tests and calculators with inst
 - https://personalitycalculator.org/ - Directory of free personality tests and calculators.
 - https://personalitycalculator.org/mbti-personality-test.html - Free MBTI-inspired 60-question personality test with type, variant, scores, strengths, growth tips, and career matches.
 - https://personalitycalculator.org/tomodachi-life-personality-calculator.html - Tomodachi Life personality calculator with US and UK/EU naming, trait values, random generation, and downloadable result cards.
-- https://personalitycalculator.org/which-infp-avatar-represents-you.html - Visual MBTI avatar card library with 32 generated avatar images for all 16 personality types.
+- https://personalitycalculator.org/which-infp-avatar-represents-you.html - Visual MBTI avatar card library with 32 generated avatar images, personality image analysis, and likely answer tendencies for all 16 types.
 - https://personalitycalculator.org/love-language-test.html - Find the ways you most naturally give and receive affection in close relationships. Answer 15 questions and get instant scored results.
 - https://personalitycalculator.org/friendship-test.html - Understand how you show up for friends, keep bonds alive, and build trust. Answer 15 questions and get instant scored results.
 - https://personalitycalculator.org/introvert-vs-extrovert-test.html - Map where your social energy naturally sits, from reflective introversion to expressive extraversion. Answer 12 questions and get instant scored results.

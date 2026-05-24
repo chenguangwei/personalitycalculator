@@ -26,9 +26,9 @@ const STATIC_PAGES = [
     priority: '0.9',
   },
   {
-    title: 'Which INFP Avatar Represents You?',
+    title: 'MBTI 16-Type Avatar and Personality Image Analysis',
     url: 'https://personalitycalculator.org/which-infp-avatar-represents-you.html',
-    description: 'A visual MBTI avatar card library with 32 generated avatar images for all 16 personality types.',
+    description: 'A visual MBTI avatar card library with 32 generated avatar images, personality image analysis, and likely answer tendencies for all 16 types.',
     priority: '0.8',
   },
 ];
