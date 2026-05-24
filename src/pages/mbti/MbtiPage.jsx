@@ -80,6 +80,9 @@ const MBTI_COPY = {
       'No. MBTI is a registered assessment system. This page is an independent MBTI-inspired calculator for educational self-reflection.',
     aiTitle: 'Can AI search engines understand this page?',
     aiBody: 'The page includes direct definitions, methodology notes, FAQ-style explanations, structured result language, and schema markup.',
+    avatarTitle: 'Explore MBTI avatar versions',
+    avatarBody: 'Compare 32 visual avatar cards for all 16 types, including two INFP versions designed for result-card analysis.',
+    avatarCta: 'Open avatar cards',
     shareModalTitle: 'Share Your Personality Result',
     shareModalBody: 'Download a polished result card or share your type link.',
     closeShare: 'Close share card',
@@ -132,6 +135,9 @@ const MBTI_COPY = {
     officialBody: '不是。MBTI 是注册测评体系。本页是独立的 MBTI 灵感计算器，用于教育和自我反思。',
     aiTitle: 'AI 搜索引擎能理解这个页面吗？',
     aiBody: '页面包含定义、方法说明、FAQ 风格解释、结构化结果语言和 schema 标记。',
+    avatarTitle: '查看 MBTI 头像形象版本',
+    avatarBody: '浏览 16 型人格的 32 张视觉卡片，包括两个可用于 INFP 分析卡的形象版本。',
+    avatarCta: '打开形象卡片',
     shareModalTitle: '分享你的人格结果',
     shareModalBody: '下载精美结果卡，或分享你的类型链接。',
     closeShare: '关闭分享卡片',
@@ -184,6 +190,9 @@ const MBTI_COPY = {
     officialBody: 'いいえ。MBTI は登録された評価システムです。このページは教育的な自己理解のための独立した診断です。',
     aiTitle: 'AI検索エンジンはこのページを理解できますか？',
     aiBody: '定義、方法メモ、FAQ形式の説明、構造化された結果文、schema マークアップを含んでいます。',
+    avatarTitle: 'MBTIアバター版を見る',
+    avatarBody: '16タイプの32枚のビジュアルカードと、INFP向けの2つの分析用アバターを比較できます。',
+    avatarCta: 'アバターカードを開く',
     shareModalTitle: '性格結果をシェア',
     shareModalBody: '結果カードをダウンロードするか、タイプリンクを共有できます。',
     closeShare: '共有カードを閉じる',
@@ -236,6 +245,9 @@ const MBTI_COPY = {
     officialBody: '아닙니다. MBTI는 등록된 평가 체계입니다. 이 페이지는 교육적 자기 성찰을 위한 독립적인 MBTI 스타일 계산기입니다.',
     aiTitle: 'AI 검색 엔진이 이 페이지를 이해할 수 있나요?',
     aiBody: '정의, 방법 설명, FAQ 형식 설명, 구조화된 결과 문구, schema 마크업을 포함합니다.',
+    avatarTitle: 'MBTI 아바타 버전 보기',
+    avatarBody: '16가지 유형의 32개 비주얼 카드와 INFP 분석 카드용 두 가지 아바타를 비교하세요.',
+    avatarCta: '아바타 카드 열기',
     shareModalTitle: '성격 결과 공유',
     shareModalBody: '완성도 높은 결과 카드를 다운로드하거나 유형 링크를 공유하세요.',
     closeShare: '공유 카드 닫기',
@@ -737,6 +749,11 @@ function SeoContent({ copy }) {
         <article>
           <h3>{copy.aiTitle}</h3>
           <p>{copy.aiBody}</p>
+        </article>
+        <article>
+          <h3>{copy.avatarTitle}</h3>
+          <p>{copy.avatarBody}</p>
+          <a className="seo-card-link" href="/which-infp-avatar-represents-you.html">{copy.avatarCta}</a>
         </article>
       </div>
     </section>

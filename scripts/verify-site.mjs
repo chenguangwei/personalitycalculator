@@ -311,7 +311,7 @@ function verifyBuiltPages() {
   if (existsSync(sitemapPath)) {
     const sitemap = readFileSync(sitemapPath, 'utf8');
     const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
-    assert(urls.length === GENERIC_TESTS.length + 3, `Expected ${GENERIC_TESTS.length + 3} sitemap URLs, found ${urls.length}`);
+    assert(urls.length === GENERIC_TESTS.length + 4, `Expected ${GENERIC_TESTS.length + 4} sitemap URLs, found ${urls.length}`);
   }
 
   const assetsPath = 'dist/assets';
@@ -349,6 +349,10 @@ function verifyCatalogBundleBoundary() {
 function verifyCoreEntrypoints() {
   const routeSource = readFileSync('src/main.jsx', 'utf8');
   assert(routeSource.includes("pageSlug === 'mbti-personality-test'"), 'Router does not support the clean MBTI path');
+  assert(
+    routeSource.includes("pageSlug === 'which-infp-avatar-represents-you'"),
+    'Router does not support the clean MBTI avatar page path',
+  );
   assert(
     routeSource.includes("pageSlug === 'tomodachi-life-personality-calculator'"),
     'Router does not support the clean Tomodachi path',

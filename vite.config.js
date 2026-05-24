@@ -25,6 +25,12 @@ const STATIC_PAGES = [
     description: 'Tomodachi Life personality calculator with US and UK/EU naming, trait values, random generation, and downloadable result cards.',
     priority: '0.9',
   },
+  {
+    title: 'Which INFP Avatar Represents You?',
+    url: 'https://personalitycalculator.org/which-infp-avatar-represents-you.html',
+    description: 'A visual MBTI avatar card library with 32 generated avatar images for all 16 personality types.',
+    priority: '0.8',
+  },
 ];
 
 function allPages() {
@@ -218,6 +224,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         mbti: resolve(__dirname, 'mbti-personality-test.html'),
         tomodachi: resolve(__dirname, 'tomodachi-life-personality-calculator.html'),
+        mbtiAvatars: resolve(__dirname, 'which-infp-avatar-represents-you.html'),
       },
     },
   },
