@@ -25,6 +25,8 @@ import {
 import { toPng } from 'html-to-image';
 import { COMMON_COPY, detectLocale, LOCALE_LABELS, SUPPORTED_LOCALES, syncLocale } from '../../i18n.js';
 import { copyText } from '../../utils/clipboard.js';
+import { MbtiCardDrawExperience } from './MbtiCardDrawPage.jsx';
+import { MBTI_RESULT_STORAGE_KEY, saveMbtiResultType } from './mbtiCardDrawData.js';
 import { calculateMbtiResult, MBTI_DIMENSIONS, MBTI_QUESTIONS } from './mbtiData.js';
 
 const STORAGE_KEY = 'personalitycalculator.mbti-progress.v1';
@@ -324,8 +326,9 @@ export function MbtiPage() {
 
   useEffect(() => {
     if (!complete) return;
+    saveMbtiResultType(result.type);
     resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, [complete]);
+  }, [complete, result.type]);
 
   useEffect(() => {
     if (complete) return;
@@ -388,6 +391,7 @@ export function MbtiPage() {
 
   function restart() {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(MBTI_RESULT_STORAGE_KEY);
     setAnswers({});
     setCurrentPage(0);
     setComplete(false);
@@ -465,7 +469,10 @@ export function MbtiPage() {
         <div className="mbti-main-col">
           <ProgressPanel progress={progress} currentPage={currentPage} answeredCount={answeredCount} complete={complete} copy={copy} />
           {complete ? (
-            <MbtiResultView result={result} resultRef={resultRef} copy={copy} onShare={() => setShareOpen(true)} onRestart={restart} />
+            <>
+              <MbtiResultView result={result} resultRef={resultRef} copy={copy} onShare={() => setShareOpen(true)} onRestart={restart} />
+              <MbtiCardDrawExperience locale={locale} initialType={result.type} variant="embedded" />
+            </>
           ) : (
             <QuestionPanel
               questionRef={questionRef}

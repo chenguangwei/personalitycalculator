@@ -88,6 +88,18 @@ export const TESTS = [
     searchText: 'mbti avatar cards 16 personality types infp intj enfp image visual personality analysis answer tendencies avatar versions',
   },
   {
+    slug: 'mbti-card-draw',
+    title: 'MBTI Card Draw',
+    description: 'Draw a same-type three-card MBTI spread for your core self, hidden power, and today’s signal.',
+    category: 'Games',
+    icon: WandSparkles,
+    iconClass: 'violet',
+    time: '3 min',
+    questions: 3,
+    href: '/mbti-card-draw.html',
+    searchText: 'mbti card draw tarot spread same type personality cards core self hidden power today signal',
+  },
+  {
     slug: 'tomodachi-life-personality-calculator',
     title: 'Tomodachi Life Personality Calculator',
     description: 'Get your unique Tomodachi Life personality and shareable profile card.',

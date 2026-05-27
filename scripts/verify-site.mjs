@@ -311,7 +311,7 @@ function verifyBuiltPages() {
   if (existsSync(sitemapPath)) {
     const sitemap = readFileSync(sitemapPath, 'utf8');
     const urls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
-    assert(urls.length === GENERIC_TESTS.length + 4, `Expected ${GENERIC_TESTS.length + 4} sitemap URLs, found ${urls.length}`);
+    assert(urls.length === GENERIC_TESTS.length + 5, `Expected ${GENERIC_TESTS.length + 5} sitemap URLs, found ${urls.length}`);
   }
 
   const assetsPath = 'dist/assets';
@@ -357,13 +357,16 @@ function verifyCoreEntrypoints() {
     routeSource.includes("pageSlug === 'tomodachi-life-personality-calculator'"),
     'Router does not support the clean Tomodachi path',
   );
+  assert(routeSource.includes("pageSlug === 'mbti-card-draw'"), 'Router does not support the clean MBTI card draw path');
   assert(routeSource.includes('replace(/\\.html$/'), 'Router does not normalize .html and clean page slugs');
 
   const catalogSource = readFileSync('src/data/tests.jsx', 'utf8');
   const mbtiIndex = catalogSource.indexOf("title: 'MBTI Test'");
+  const mbtiCardDrawIndex = catalogSource.indexOf("title: 'MBTI Card Draw'");
   const tomodachiIndex = catalogSource.indexOf("title: 'Tomodachi Life Personality Calculator'");
   const genericCatalogIndex = catalogSource.indexOf('...GENERIC_CATALOG');
   assert(mbtiIndex !== -1, 'Homepage catalog is missing the MBTI card');
+  assert(mbtiCardDrawIndex !== -1, 'Homepage catalog is missing the MBTI card draw card');
   assert(tomodachiIndex !== -1, 'Homepage catalog is missing the Tomodachi card');
   assert(
     tomodachiIndex !== -1 && genericCatalogIndex !== -1 && tomodachiIndex < genericCatalogIndex,

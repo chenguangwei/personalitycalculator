@@ -31,6 +31,12 @@ const STATIC_PAGES = [
     description: 'A visual MBTI avatar card library with 32 generated avatar images, personality image analysis, and likely answer tendencies for all 16 types.',
     priority: '0.8',
   },
+  {
+    title: 'MBTI Card Draw',
+    url: 'https://personalitycalculator.org/mbti-card-draw.html',
+    description: 'Draw a same-type MBTI three-card spread for your core self, hidden power, and today’s signal.',
+    priority: '0.8',
+  },
 ];
 
 function allPages() {
@@ -225,6 +231,7 @@ export default defineConfig({
         mbti: resolve(__dirname, 'mbti-personality-test.html'),
         tomodachi: resolve(__dirname, 'tomodachi-life-personality-calculator.html'),
         mbtiAvatars: resolve(__dirname, 'which-infp-avatar-represents-you.html'),
+        mbtiCardDraw: resolve(__dirname, 'mbti-card-draw.html'),
       },
     },
   },
