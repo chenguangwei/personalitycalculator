@@ -1,4 +1,5 @@
 import { MBTI_AVATAR_TYPES, localizeAvatarType } from './mbtiAvatarData.js';
+import { MBTI_CARD_INTERPRETATIONS } from './mbtiCardInterpretations.js';
 
 export const MBTI_RESULT_STORAGE_KEY = 'personalitycalculator.mbti-result.v1';
 
@@ -99,11 +100,25 @@ const POSITION_COPY = {
   },
 };
 
-const MBTI_CARD_ART_IMAGES = {
-  coreSelf: '/assets/mbti-card-draw/core-self.webp',
-  hiddenPower: '/assets/mbti-card-draw/hidden-power.webp',
-  todaysSignal: '/assets/mbti-card-draw/todays-signal.webp',
+const POSITION_IMAGE_SLUGS = {
+  coreSelf: 'coreSelf',
+  hiddenPower: 'hiddenPower',
+  todaysSignal: 'todaysSignal',
 };
+
+const POSITION_MARKS = {
+  coreSelf: 'I',
+  hiddenPower: 'II',
+  todaysSignal: 'III',
+};
+
+function getTypeTheme(type) {
+  if (type.includes('NT')) return 'analyst';
+  if (type.includes('NF')) return 'diplomat';
+  if (type.includes('SJ')) return 'sentinel';
+  if (type.includes('SP')) return 'explorer';
+  return 'default';
+}
 
 export function isValidMbtiType(type) {
   return MBTI_AVATAR_TYPES.some((item) => item.type === type);
@@ -155,17 +170,22 @@ export function getMbtiDrawCards(type, locale = 'en') {
   return MBTI_CARD_POSITIONS.map((position) => {
     const copy = localeCopy[position] || fallbackCopy[position];
     const fallback = fallbackCopy[position];
+    const typedInsight =
+      MBTI_CARD_INTERPRETATIONS[normalized]?.[position]?.[locale] ||
+      MBTI_CARD_INTERPRETATIONS[normalized]?.[position]?.en;
     return {
       id: `${normalized.toLowerCase()}-${position.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)}`,
       type: normalized,
       position,
-      image: MBTI_CARD_ART_IMAGES[position],
+      positionMark: POSITION_MARKS[position],
+      theme: getTypeTheme(normalized),
+      image: `/assets/mbti-card-draw/cards/${normalized.toLowerCase()}-${POSITION_IMAGE_SLUGS[position]}.webp`,
       typeTitle: localizedType.title || fallbackType.title,
       typeTone: localizedType.tone || fallbackType.tone,
       title: copy.title || fallback.title,
-      subtitle: copy.subtitle || fallback.subtitle,
-      body: copy.body?.(normalized, localizedType) || fallback.body(normalized, fallbackType),
-      prompt: copy.prompt?.(localizedType, normalized) || fallback.prompt(fallbackType, normalized),
+      subtitle: typedInsight?.subtitle || copy.subtitle || fallback.subtitle,
+      body: typedInsight?.body || copy.body?.(normalized, localizedType) || fallback.body(normalized, fallbackType),
+      prompt: typedInsight?.prompt || copy.prompt?.(localizedType, normalized) || fallback.prompt(fallbackType, normalized),
       shareText: copy.shareText?.(normalized) || fallback.shareText(normalized),
       sharePath: `/mbti-card-draw.html?type=${normalized}&card=${position}`,
     };

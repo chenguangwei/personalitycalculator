@@ -53,7 +53,7 @@ const DRAW_COPY = {
     promptLabel: 'Reflection prompt',
     typePicker: 'Choose MBTI type',
     emptyCta: 'Take the test first',
-    imageNote: 'Dedicated card art generated for this spread.',
+    imageNote: '48 MBTI tarot cards across type and position.',
   },
   zh: {
     brand: 'MBTI 人格抽卡',
@@ -83,7 +83,7 @@ const DRAW_COPY = {
     promptLabel: '自我提问',
     typePicker: '选择 MBTI 类型',
     emptyCta: '先完成测试',
-    imageNote: '已使用专属卡牌视觉资产。',
+    imageNote: '48 张 MBTI × 牌位专属人格塔罗卡。',
   },
   ja: {
     brand: 'MBTIカードドロー',
@@ -113,7 +113,7 @@ const DRAW_COPY = {
     promptLabel: '内省の問い',
     typePicker: 'MBTIタイプを選ぶ',
     emptyCta: '先に診断する',
-    imageNote: 'このスプレッド専用のカードアートを使用しています。',
+    imageNote: 'MBTIタイプと位置ごとの48枚の専用タロットカード。',
   },
   ko: {
     brand: 'MBTI 카드 뽑기',
@@ -143,7 +143,7 @@ const DRAW_COPY = {
     promptLabel: '성찰 질문',
     typePicker: 'MBTI 유형 선택',
     emptyCta: '먼저 테스트하기',
-    imageNote: '이 스프레드 전용 카드 아트를 사용합니다.',
+    imageNote: 'MBTI 유형과 위치별 48장의 전용 타로 카드.',
   },
 };
 
@@ -316,7 +316,12 @@ export function MbtiCardDrawExperience({ locale, initialType, variant = 'embedde
           {selectedType && cards.map((card) => (
             <article
               key={card.id}
-              className={selectedPosition === card.position ? 'mbti-draw-card selected' : 'mbti-draw-card'}
+              className={[
+                'mbti-draw-card',
+                `theme-${card.theme}`,
+                `position-${card.position}`,
+                selectedPosition === card.position ? 'selected' : '',
+              ].filter(Boolean).join(' ')}
             >
               <div className="mbti-draw-card-inner">
                 {!drawn ? (
@@ -327,7 +332,15 @@ export function MbtiCardDrawExperience({ locale, initialType, variant = 'embedde
                   </button>
                 ) : (
                   <div className="mbti-draw-card-face">
-                    <img src={card.image} alt={`${card.type} ${card.title}`} />
+                    <div className="mbti-draw-card-art">
+                      <img src={card.image} alt={`${card.type} ${card.typeTitle} ${card.title}`} />
+                      <div className="mbti-draw-card-art-copy">
+                        <span>{card.type}</span>
+                        <strong>{card.typeTitle}</strong>
+                        <small>{card.title}</small>
+                      </div>
+                      <em aria-hidden="true">{card.positionMark}</em>
+                    </div>
                     <span>{card.type} · {card.typeTitle}</span>
                     <h3>{card.title}</h3>
                     <strong>{card.subtitle}</strong>
@@ -377,8 +390,14 @@ export function MbtiCardDrawExperience({ locale, initialType, variant = 'embedde
 function MbtiSelectedShareCard({ card, copy, refProp }) {
   return (
     <article className="mbti-selected-share-card" ref={refProp}>
-      <div className="mbti-selected-share-art">
-        <img src={card.image} alt={`${card.type} ${card.title}`} />
+      <div className={`mbti-selected-share-art theme-${card.theme} position-${card.position}`}>
+        <img src={card.image} alt={`${card.type} ${card.typeTitle} ${card.title}`} />
+        <div className="mbti-draw-card-art-copy">
+          <span>{card.type}</span>
+          <strong>{card.typeTitle}</strong>
+          <small>{card.title}</small>
+        </div>
+        <em aria-hidden="true">{card.positionMark}</em>
       </div>
       <div className="mbti-selected-share-copy">
         <span>{copy.shareIntro}</span>
