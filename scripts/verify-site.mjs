@@ -1,5 +1,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { filterTestsBySearch, getSearchPreviewTests } from '../src/pages/home/searchUtils.js';
 import { GENERIC_TESTS } from '../src/pages/quiz/genericTestData.js';
+import { GENERATED_TEST_CATALOG } from '../src/data/generatedTestCatalog.js';
 
 const errors = [];
 const REQUIRED_LIBRARY_EXPANSION_SLUGS = [
@@ -397,6 +399,38 @@ function verifySuggestionQueue() {
   assert(source.includes('suggestionMailto'), 'Homepage cannot email a saved suggestion');
 }
 
+function verifyHomepageSearch() {
+  const lightTriadResults = filterTestsBySearch(GENERATED_TEST_CATALOG, {
+    query: 'light triad test',
+    activeCategory: 'All',
+  });
+  assert(
+    lightTriadResults.some((test) => test.slug === 'light-triad-test'),
+    'Homepage search does not find Light Triad Test for "light triad test"',
+  );
+
+  const splitTermResults = filterTestsBySearch(GENERATED_TEST_CATALOG, {
+    query: 'triad light',
+    activeCategory: 'All',
+  });
+  assert(
+    splitTermResults.some((test) => test.slug === 'light-triad-test'),
+    'Homepage search does not match split query terms across title/search text',
+  );
+
+  const careerResults = filterTestsBySearch(GENERATED_TEST_CATALOG, {
+    query: 'leadership',
+    activeCategory: 'Career',
+  });
+  assert(
+    careerResults.length > 0 && careerResults.every((test) => test.category === 'Career'),
+    'Homepage search does not respect category filters',
+  );
+
+  const previewResults = getSearchPreviewTests(lightTriadResults, 6);
+  assert(previewResults.length > 0 && previewResults.length <= 6, 'Homepage search preview is not capped');
+}
+
 const catalog = verifyCatalog();
 const builtPages = verifyBuiltPages();
 verifyTomodachiHelp();
@@ -405,6 +439,7 @@ verifyCoreEntrypoints();
 verifyQuizRuntimeBoundary();
 verifyGenericResultCard();
 verifySuggestionQueue();
+verifyHomepageSearch();
 
 if (errors.length) {
   console.error(`Site verification failed with ${errors.length} issue(s):`);

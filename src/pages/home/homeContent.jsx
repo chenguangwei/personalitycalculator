@@ -28,6 +28,9 @@ export const LOCALE_COPY = {
     library: 'Personality Test Library',
     categoryTitle: (category) => `${category} Personality Tests`,
     viewAll: 'View all tests',
+    searchResultsTitle: 'Search results',
+    searchResultsCount: (count) => `${count} matching ${count === 1 ? 'test' : 'tests'}`,
+    searchPreviewMore: (count) => `${count} more result${count === 1 ? '' : 's'} in the full library below.`,
     noMatches: 'No matching tests yet',
     noMatchesBody: 'Try another keyword or clear the category filter.',
     benefits: [
@@ -168,6 +171,9 @@ export const LOCALE_COPY = {
     library: '人格测试库',
     categoryTitle: (category) => `${category} 人格测试`,
     viewAll: '查看全部',
+    searchResultsTitle: '搜索结果',
+    searchResultsCount: (count) => `匹配到 ${count} 个测试`,
+    searchPreviewMore: (count) => `下方完整测试库还有 ${count} 个结果。`,
     noMatches: '暂时没有匹配测试',
     noMatchesBody: '换个关键词，或清除当前分类筛选。',
     benefits: [
@@ -308,6 +314,9 @@ export const LOCALE_COPY = {
     library: '性格テストライブラリ',
     categoryTitle: (category) => `${category} テスト`,
     viewAll: 'すべて見る',
+    searchResultsTitle: '検索結果',
+    searchResultsCount: (count) => `${count} 件のテストに一致`,
+    searchPreviewMore: (count) => `下の一覧にさらに ${count} 件あります。`,
     noMatches: '一致するテストがありません',
     noMatchesBody: '別のキーワードを試すか、カテゴリを解除してください。',
     benefits: [
@@ -448,6 +457,9 @@ export const LOCALE_COPY = {
     library: '성격 테스트 라이브러리',
     categoryTitle: (category) => `${category} 성격 테스트`,
     viewAll: '전체 보기',
+    searchResultsTitle: '검색 결과',
+    searchResultsCount: (count) => `${count}개 테스트 일치`,
+    searchPreviewMore: (count) => `아래 전체 라이브러리에 ${count}개 결과가 더 있습니다.`,
     noMatches: '일치하는 테스트가 없습니다',
     noMatchesBody: '다른 키워드를 시도하거나 카테고리 필터를 지워보세요.',
     benefits: [

@@ -22,6 +22,7 @@ import {
 } from './homeContent.jsx';
 import { categoryLabel, loadSavedSuggestions, localizedText, pickTests, suggestionMailto } from './homeUtils.js';
 import { FeaturedTestCard, HeroIllustration, MiniTestCard, TestCard } from './components/HomeCards.jsx';
+import { filterTestsBySearch, getSearchPreviewTests, normalizeSearchQuery } from './searchUtils.js';
 import { localizeTest } from '../../data/testTranslations.js';
 import { detectLocale, formatDuration, LOCALE_LABELS, SUPPORTED_LOCALES, syncLocale } from '../../i18n.js';
 
@@ -51,17 +52,17 @@ export function HomePage() {
   );
   const testCount = TESTS.length;
   const questionCount = TESTS.reduce((sum, test) => sum + test.questions, 0);
+  const normalizedQuery = normalizeSearchQuery(query);
+  const hasSearchQuery = normalizedQuery.length > 0;
   const filteredTests = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    return localizedTests.filter((test) => {
-      const categoryMatch = activeCategory === 'All' || test.category === activeCategory;
-      const queryMatch =
-        !normalizedQuery ||
-        GLOBAL_SEARCH_TERMS.has(normalizedQuery) ||
-        test.searchText.includes(normalizedQuery);
-      return categoryMatch && queryMatch;
+    return filterTestsBySearch(localizedTests, {
+      query,
+      activeCategory,
+      globalSearchTerms: GLOBAL_SEARCH_TERMS,
     });
   }, [activeCategory, localizedTests, query]);
+  const searchPreviewTests = useMemo(() => getSearchPreviewTests(filteredTests), [filteredTests]);
+  const searchResultCountText = copy.searchResultsCount(filteredTests.length);
   const filteredGuides = useMemo(
     () =>
       activeGuideTopic === 'all'
@@ -128,6 +129,11 @@ export function HomePage() {
     });
   }
 
+  function clearSearch() {
+    setQuery('');
+    requestAnimationFrame(() => searchRef.current?.focus());
+  }
+
   return (
     <main className="landing-app">
       <header className="site-header">
@@ -186,7 +192,7 @@ export function HomePage() {
         </aside>
 
         <section className="landing-main" id="tests">
-          <form className="hero-search" role="search" onSubmit={(event) => event.preventDefault()}>
+          <form className={`hero-search${hasSearchQuery ? ' is-searching' : ''}`} role="search" onSubmit={(event) => event.preventDefault()}>
             <Search size={20} />
             <input
               ref={searchRef}
@@ -196,8 +202,43 @@ export function HomePage() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
-            <button type="button" onClick={() => setQuery('')}>{query ? copy.clear : copy.search}</button>
+            <button type="button" onClick={hasSearchQuery ? clearSearch : () => searchRef.current?.focus()}>
+              {hasSearchQuery ? copy.clear : copy.search}
+            </button>
           </form>
+          {hasSearchQuery && (
+            <section className="search-results-panel" aria-live="polite" aria-label={copy.searchResultsTitle}>
+              <div className="search-results-head">
+                <div>
+                  <strong>{copy.searchResultsTitle}</strong>
+                  <span>{searchResultCountText}</span>
+                </div>
+                <button type="button" onClick={() => testSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}>
+                  {copy.viewAll} <span aria-hidden="true">→</span>
+                </button>
+              </div>
+              {searchPreviewTests.length > 0 ? (
+                <>
+                  <div className="search-results-grid">
+                    {searchPreviewTests.map((test) => (
+                      <MiniTestCard key={test.href} test={test} copy={copy} locale={locale} />
+                    ))}
+                  </div>
+                  {filteredTests.length > searchPreviewTests.length && (
+                    <p className="search-results-more">
+                      {copy.searchPreviewMore(filteredTests.length - searchPreviewTests.length)}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <div className="empty-tests compact">
+                  <FileQuestion size={24} />
+                  <strong>{copy.noMatches}</strong>
+                  <p>{copy.noMatchesBody}</p>
+                </div>
+              )}
+            </section>
+          )}
 
           <section className="landing-hero">
             <div className="hero-copy">
