@@ -14,6 +14,9 @@ const MbtiCardDrawPage = lazy(() =>
 const GenericTestPage = lazy(() =>
   import('./pages/quiz/GenericTestPage.jsx').then((module) => ({ default: module.GenericTestPage })),
 );
+const AttitudinalPsychePage = lazy(() =>
+  import('./pages/ap/AttitudinalPsychePage.jsx').then((module) => ({ default: module.AttitudinalPsychePage })),
+);
 const TomodachiPage = lazy(() =>
   import('./pages/tomodachi/TomodachiPage.jsx').then((module) => ({ default: module.TomodachiPage })),
 );
@@ -31,6 +34,7 @@ function App() {
   if (pageSlug === 'which-infp-avatar-represents-you') return <PageShell><MbtiAvatarPage /></PageShell>;
   if (pageSlug === 'mbti-card-draw') return <PageShell><MbtiCardDrawPage /></PageShell>;
   if (pageSlug === 'tomodachi-life-personality-calculator') return <PageShell><TomodachiPage /></PageShell>;
+  if (pageSlug === 'attitudinal-psyche-style-test') return <PageShell><AttitudinalPsychePage /></PageShell>;
   if (pageSlug && !pageSlug.includes('/')) return <PageShell><GenericTestPage slug={pageSlug} /></PageShell>;
   return <PageShell><HomePage /></PageShell>;
 }

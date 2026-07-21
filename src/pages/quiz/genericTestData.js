@@ -9315,9 +9315,10 @@ const ADDITIONAL_TESTS = [
   }),
   buildCompactTest({
     slug: 'attitudinal-psyche-style-test',
-    title: 'Attitudinal Psyche Style Test',
+    title: 'Attitudinal Psyche Test',
     category: 'Popular',
-    intro: 'Map your confidence and sensitivity across volition, logic, physics, and emotion attitudes.',
+    time: '5 min',
+    intro: 'Free Attitudinal Psyche test: rank volition, logic, emotion, and physics to reveal your four-letter AP type and what each position means.',
     dimensions: [
       ['volition', 'Volition', 'Volition Attitude', 'You are tuned to willpower, direction, boundaries, and personal agency.', ['Agency', 'Boundaries', 'Leadership'], ['Do not overpower softer signals']],
       ['logic', 'Logic', 'Logic Attitude', 'You are tuned to reasoning, accuracy, argument, and conceptual clarity.', ['Reasoning', 'Precision', 'Debate'], ['Stay connected to lived experience']],
@@ -9325,10 +9326,10 @@ const ADDITIONAL_TESTS = [
       ['emotion', 'Emotion', 'Emotion Attitude', 'You are tuned to expression, mood, atmosphere, and emotional meaning.', ['Expression', 'Sensitivity', 'Mood reading'], ['Regulate intensity when needed']],
     ],
     questions: [
-      ['volition', 'Questions of agency and control matter strongly to you.', 'You notice when your will is being pushed or ignored.'],
-      ['logic', 'You care whether reasoning is clear and consistent.', 'Arguments can energize rather than drain you.'],
-      ['physics', 'Comfort, space, food, beauty, or resources affect your mood.', 'The physical details of life matter to you.'],
-      ['emotion', 'You quickly notice emotional atmosphere.', 'Expression and mood shape how you read a situation.'],
+      ['volition', 'Questions of agency and control matter strongly to you.', 'You notice when your will is being pushed or ignored.', 'Setting your own direction feels important.'],
+      ['logic', 'You care whether reasoning is clear and consistent.', 'Arguments can energize rather than drain you.', 'You like getting to what is actually true.'],
+      ['physics', 'Comfort, space, food, beauty, or resources affect your mood.', 'The physical details of life matter to you.', 'You notice the look and feel of your surroundings.'],
+      ['emotion', 'You quickly notice emotional atmosphere.', 'Expression and mood shape how you read a situation.', 'Relationships and meaning guide your choices.'],
     ],
   }),
   buildCompactTest({

@@ -340,6 +340,7 @@ export function GenericTestPage({ slug }) {
   const [complete, setComplete] = useState(false);
   const [copied, setCopied] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [shareClosing, setShareClosing] = useState(false);
   const [cardImageReady, setCardImageReady] = useState(false);
   const resultCardRef = useRef(null);
   const cardImageRef = useRef(null);
@@ -451,7 +452,7 @@ export function GenericTestPage({ slug }) {
     if (!shareModalOpen) return undefined;
 
     const onKeyDown = (event) => {
-      if (event.key === 'Escape') setShareModalOpen(false);
+      if (event.key === 'Escape') closeShareModal();
     };
 
     document.addEventListener('keydown', onKeyDown);
@@ -560,11 +561,13 @@ export function GenericTestPage({ slug }) {
     }
 
     cardImageKeyRef.current = cacheKey;
-    const renderPromise = toPng(resultCardRef.current, {
+    // Ensure the serif display font is loaded so the exported PNG matches the screen.
+    const fontsReady = document.fonts?.ready || Promise.resolve();
+    const renderPromise = fontsReady.then(() => toPng(resultCardRef.current, {
       cacheBust: false,
-      pixelRatio: 1.5,
+      pixelRatio: 2,
       backgroundColor: theme.bgStart,
-    }).then((dataUrl) => {
+    })).then((dataUrl) => {
       if (cardImageKeyRef.current === cacheKey) {
         cardImageRef.current = dataUrl;
         setCardImageReady(true);
@@ -583,10 +586,23 @@ export function GenericTestPage({ slug }) {
   }
 
   function shareResult() {
+    setShareClosing(false);
     setShareModalOpen(true);
     getResultCardImage().catch(() => {
       setCardImageReady(false);
     });
+  }
+
+  function closeShareModal() {
+    if (prefersReducedMotion()) {
+      setShareModalOpen(false);
+      return;
+    }
+    setShareClosing(true);
+    window.setTimeout(() => {
+      setShareModalOpen(false);
+      setShareClosing(false);
+    }, 180);
   }
 
   async function copyShareText() {
@@ -779,9 +795,9 @@ export function GenericTestPage({ slug }) {
         </section>
       )}
       {shareModalOpen && complete && (
-        <div className="quiz-share-backdrop" role="dialog" aria-modal="true" aria-labelledby="quiz-share-title">
+        <div className={`quiz-share-backdrop${shareClosing ? ' is-closing' : ''}`} role="dialog" aria-modal="true" aria-labelledby="quiz-share-title">
           <section className="quiz-share-modal">
-            <button type="button" className="quiz-share-close" onClick={() => setShareModalOpen(false)} aria-label={copy.closeShare}>
+            <button type="button" className="quiz-share-close" onClick={closeShareModal} aria-label={copy.closeShare}>
               <X size={20} />
             </button>
             <div className="quiz-share-head">
@@ -808,12 +824,39 @@ export function GenericTestPage({ slug }) {
   );
 }
 
+function prefersReducedMotion() {
+  return typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+}
+
+function useCountUp(target, duration = 600) {
+  const [value, setValue] = useState(() => (prefersReducedMotion() ? target : 0));
+  useEffect(() => {
+    if (prefersReducedMotion()) {
+      setValue(target);
+      return undefined;
+    }
+    let raf;
+    let start;
+    const step = (ts) => {
+      if (start === undefined) start = ts;
+      const t = Math.min(1, (ts - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      setValue(Math.round(target * eased));
+      if (t < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [target, duration]);
+  return value;
+}
+
 function ResultCardContent({ result, localizedTest, copy, titleId }) {
+  const percent = useCountUp(result.primary.percent);
   return (
     <>
       <div className="quiz-result-card-top">
         <span className="quiz-result-label">{copy.strongestMatch}</span>
-        <strong>{result.primary.percent}%</strong>
+        <strong>{percent}%</strong>
       </div>
       <h2 id={titleId}>{result.primary.title}</h2>
       {result.secondary && <h3>{copy.secondaryPattern}: {result.secondary.title}</h3>}

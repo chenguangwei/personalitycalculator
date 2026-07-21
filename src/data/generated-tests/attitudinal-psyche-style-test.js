@@ -8,10 +8,10 @@ export default {
     "Strongly Agree"
   ],
   "slug": "attitudinal-psyche-style-test",
-  "title": "Attitudinal Psyche Style Test",
+  "title": "Attitudinal Psyche Test",
   "category": "Popular",
-  "time": "6 min",
-  "intro": "Map your confidence and sensitivity across volition, logic, physics, and emotion attitudes.",
+  "time": "5 min",
+  "intro": "Free Attitudinal Psyche test: rank volition, logic, emotion, and physics to reveal your four-letter AP type and what each position means.",
   "dimensions": [
     {
       "key": "volition",
@@ -88,40 +88,64 @@ export default {
       "id": "attitudinal-psyche-style-test-2"
     },
     {
-      "dimension": "logic",
-      "text": "You care whether reasoning is clear and consistent.",
+      "dimension": "volition",
+      "text": "Setting your own direction feels important.",
       "reverse": false,
       "id": "attitudinal-psyche-style-test-3"
     },
     {
       "dimension": "logic",
-      "text": "Arguments can energize rather than drain you.",
+      "text": "You care whether reasoning is clear and consistent.",
       "reverse": false,
       "id": "attitudinal-psyche-style-test-4"
+    },
+    {
+      "dimension": "logic",
+      "text": "Arguments can energize rather than drain you.",
+      "reverse": false,
+      "id": "attitudinal-psyche-style-test-5"
+    },
+    {
+      "dimension": "logic",
+      "text": "You like getting to what is actually true.",
+      "reverse": false,
+      "id": "attitudinal-psyche-style-test-6"
     },
     {
       "dimension": "physics",
       "text": "Comfort, space, food, beauty, or resources affect your mood.",
       "reverse": false,
-      "id": "attitudinal-psyche-style-test-5"
+      "id": "attitudinal-psyche-style-test-7"
     },
     {
       "dimension": "physics",
       "text": "The physical details of life matter to you.",
       "reverse": false,
-      "id": "attitudinal-psyche-style-test-6"
+      "id": "attitudinal-psyche-style-test-8"
+    },
+    {
+      "dimension": "physics",
+      "text": "You notice the look and feel of your surroundings.",
+      "reverse": false,
+      "id": "attitudinal-psyche-style-test-9"
     },
     {
       "dimension": "emotion",
       "text": "You quickly notice emotional atmosphere.",
       "reverse": false,
-      "id": "attitudinal-psyche-style-test-7"
+      "id": "attitudinal-psyche-style-test-10"
     },
     {
       "dimension": "emotion",
       "text": "Expression and mood shape how you read a situation.",
       "reverse": false,
-      "id": "attitudinal-psyche-style-test-8"
+      "id": "attitudinal-psyche-style-test-11"
+    },
+    {
+      "dimension": "emotion",
+      "text": "Relationships and meaning guide your choices.",
+      "reverse": false,
+      "id": "attitudinal-psyche-style-test-12"
     }
   ]
 };
