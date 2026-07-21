@@ -2868,6 +2868,132 @@ a {
   to { transform: scaleX(1); }
 }
 
+.quiz-lifo-lead {
+  margin: 0 0 14px;
+  color: #475569;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.56;
+}
+
+.quiz-lifo-rows {
+  display: grid;
+  gap: 14px;
+}
+
+.quiz-lifo-row {
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.quiz-lifo-row-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.quiz-lifo-row-head strong {
+  color: #0f172a;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.quiz-lifo-tag {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.quiz-lifo-tag.is-stress {
+  background: #fee2e2;
+  color: #9f1239;
+}
+
+.quiz-lifo-bars {
+  display: grid;
+  gap: 7px;
+}
+
+.quiz-lifo-bar {
+  display: grid;
+  grid-template-columns: 92px 1fr 44px;
+  align-items: center;
+  gap: 10px;
+}
+
+.quiz-lifo-bar > span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.quiz-lifo-bar > em {
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+  font-style: normal;
+  text-align: right;
+}
+
+.quiz-lifo-bar i {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #eef2f7;
+}
+
+.quiz-lifo-bar b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transform-origin: left center;
+  animation: quiz-bar-grow 700ms var(--ease-out) 320ms both;
+}
+
+.quiz-lifo-bar b.is-stress {
+  opacity: 0.5;
+}
+
+.quiz-lifo-overdone {
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid #fecdd3;
+  border-radius: 12px;
+  background: #fff1f2;
+}
+
+.quiz-lifo-overdone h4 {
+  margin: 0 0 8px;
+  color: #9f1239;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.quiz-lifo-overdone ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 18px;
+  color: #7f1d1d;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+@media (max-width: 520px) {
+  .quiz-lifo-bar {
+    grid-template-columns: 78px 1fr 40px;
+    gap: 8px;
+  }
+}
+
 .quiz-related {
   grid-column: 1 / -1;
   padding: 18px;

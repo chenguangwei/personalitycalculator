@@ -51,6 +51,18 @@ const QUIZ_COPY = {
     completeLabel: (progress) => `${progress}% complete`,
     answeredLabel: (answered, total) => `${answered} of ${total} answered`,
     questionLabel: (index) => `Question ${index}`,
+    // Grouped (two-condition) profile — LIFO-style tests. English-only; other
+    // locales fall back to these via the per-key merge below.
+    styleProfile: 'Your style profile',
+    favorableLabel: 'At your best',
+    stressLabel: 'Under pressure',
+    primaryTag: 'Primary',
+    backupTag: 'Backup',
+    lifoLead: (primary, backup, shifts) =>
+      shifts
+        ? `Your primary strength is ${primary.groupLabel}. Under pressure you tend to shift toward ${backup.groupLabel}, so watch how that style behaves when it is overdone.`
+        : `Your primary strength is ${primary.groupLabel}, and you stay with it under pressure — the risk is overusing it rather than switching away.`,
+    overdoneTitle: (label) => `When ${label} is overdone under pressure`,
   },
   zh: {
     progressReady: '你的结果已准备好。',
@@ -75,6 +87,16 @@ const QUIZ_COPY = {
     completeLabel: (progress) => `${progress}% 完成`,
     answeredLabel: (answered, total) => `${answered}/${total} 已答`,
     questionLabel: (index) => `第 ${index} 题`,
+    styleProfile: '你的风格画像',
+    favorableLabel: '状态最好时',
+    stressLabel: '压力之下',
+    primaryTag: '主导',
+    backupTag: '备用',
+    lifoLead: (primary, backup, shifts) =>
+      shifts
+        ? `你的主导优势是${primary.groupLabel}。压力之下，你往往会转向${backup.groupLabel}，因此要留意这种风格被过度使用时的表现。`
+        : `你的主导优势是${primary.groupLabel}，在压力之下你也会继续依靠它——风险在于用力过度，而不是转向其他风格。`,
+    overdoneTitle: (label) => `当${label}在压力下被过度使用`,
   },
   ja: {
     progressReady: '結果の準備ができました。',
@@ -99,6 +121,16 @@ const QUIZ_COPY = {
     completeLabel: (progress) => `${progress}% 完了`,
     answeredLabel: (answered, total) => `${answered}/${total} 回答済み`,
     questionLabel: (index) => `質問 ${index}`,
+    styleProfile: 'あなたのスタイルプロフィール',
+    favorableLabel: '好調なとき',
+    stressLabel: 'プレッシャー下',
+    primaryTag: '主要',
+    backupTag: '予備',
+    lifoLead: (primary, backup, shifts) =>
+      shifts
+        ? `あなたの主要な強みは${primary.groupLabel}です。プレッシャー下では${backup.groupLabel}に傾きやすいので、そのスタイルが過剰になったときの振る舞いに注意しましょう。`
+        : `あなたの主要な強みは${primary.groupLabel}で、プレッシャー下でもそれを保ちます。リスクは切り替えることではなく、使いすぎることです。`,
+    overdoneTitle: (label) => `${label}がプレッシャー下で過剰になると`,
   },
   ko: {
     progressReady: '결과가 준비되었습니다.',
@@ -123,6 +155,16 @@ const QUIZ_COPY = {
     completeLabel: (progress) => `${progress}% 완료`,
     answeredLabel: (answered, total) => `${answered}/${total} 응답`,
     questionLabel: (index) => `문항 ${index}`,
+    styleProfile: '나의 스타일 프로필',
+    favorableLabel: '최상의 상태일 때',
+    stressLabel: '압박받을 때',
+    primaryTag: '주도',
+    backupTag: '예비',
+    lifoLead: (primary, backup, shifts) =>
+      shifts
+        ? `당신의 주도 강점은 ${primary.groupLabel}입니다. 압박을 받으면 ${backup.groupLabel} 쪽으로 기우는 경향이 있으니, 그 스타일이 과하게 쓰일 때의 모습을 살펴보세요.`
+        : `당신의 주도 강점은 ${primary.groupLabel}이며, 압박 속에서도 그대로 유지합니다. 위험은 다른 스타일로 바꾸는 것이 아니라 과도하게 쓰는 것입니다.`,
+    overdoneTitle: (label) => `${label}이 압박 속에서 과하게 쓰일 때`,
   },
 };
 
@@ -299,6 +341,13 @@ export function calculateResult(test, answers) {
     }))
     .sort((a, b) => b.percent - a.percent || b.score - a.score);
 
+  // Tests whose dimensions carry a `group` (e.g. LIFO's 4 styles measured under
+  // favorable/stress) are aggregated into a grouped style profile instead of a
+  // flat winner. Every other test keeps the normal single-winner path.
+  if (test.dimensions[0]?.group) {
+    return buildGroupedResult(test, dimensions);
+  }
+
   const primary = dimensions[0];
   const secondary = dimensions.find((dimension) => dimension.key !== primary.key && primary.percent - dimension.percent <= 6);
 
@@ -306,6 +355,67 @@ export function calculateResult(test, answers) {
     primary,
     secondary,
     dimensions,
+  };
+}
+
+function buildGroupedResult(test, dimensions) {
+  const scoredByKey = Object.fromEntries(dimensions.map((dimension) => [dimension.key, dimension]));
+  const order = [];
+  const seen = new Set();
+  test.dimensions.forEach((dimension) => {
+    if (dimension.group && !seen.has(dimension.group)) {
+      seen.add(dimension.group);
+      order.push(dimension.group);
+    }
+  });
+
+  const styles = order.map((group) => {
+    const favSource = test.dimensions.find((d) => d.group === group && d.condition === 'favorable');
+    const stressSource = test.dimensions.find((d) => d.group === group && d.condition === 'stress');
+    const favPercent = scoredByKey[favSource?.key]?.percent || 0;
+    const strPercent = scoredByKey[stressSource?.key]?.percent || 0;
+    return {
+      group,
+      groupLabel: favSource?.groupLabel || favSource?.title,
+      color: favSource?.color,
+      title: favSource?.title,
+      summary: favSource?.summary,
+      strengths: favSource?.strengths || [],
+      growth: favSource?.growth || [],
+      stressSummary: stressSource?.summary,
+      overdone: stressSource?.overdone || [],
+      favPercent,
+      strPercent,
+    };
+  });
+
+  const primaryStyle = [...styles].sort((a, b) => b.favPercent - a.favPercent)[0];
+  const backupStyle = [...styles].sort((a, b) => b.strPercent - a.strPercent)[0];
+
+  // Shape a `primary`/`secondary` so the shared result card, share text and
+  // download filename keep working without special-casing grouped tests.
+  const primary = {
+    key: primaryStyle.group,
+    label: primaryStyle.groupLabel,
+    title: primaryStyle.groupLabel,
+    color: primaryStyle.color,
+    percent: primaryStyle.favPercent,
+    summary: primaryStyle.summary,
+    strengths: primaryStyle.strengths,
+    growth: primaryStyle.growth,
+  };
+  const secondary = backupStyle.group !== primaryStyle.group
+    ? { key: backupStyle.group, title: backupStyle.groupLabel, color: backupStyle.color, percent: backupStyle.strPercent }
+    : undefined;
+
+  return {
+    primary,
+    secondary,
+    dimensions,
+    grouped: true,
+    styles,
+    primaryStyle,
+    backupStyle,
   };
 }
 
@@ -347,7 +457,7 @@ export function GenericTestPage({ slug }) {
   const cardImageKeyRef = useRef('');
   const cardRenderPromiseRef = useRef(null);
   const commonCopy = COMMON_COPY[locale] || COMMON_COPY.en;
-  const copy = QUIZ_COPY[locale] || QUIZ_COPY.en;
+  const copy = { ...QUIZ_COPY.en, ...(QUIZ_COPY[locale] || {}) };
   const localizedTest = useMemo(() => (test ? localizeTest(test, locale) : null), [test, locale]);
 
   useEffect(() => {
@@ -765,20 +875,24 @@ export function GenericTestPage({ slug }) {
               <p>{copy.resultMeaningBody(result)}</p>
             </article>
           </div>
-          <div className="quiz-score-card">
-            <h3>{copy.scoreBreakdown}</h3>
-            {result.dimensions.map((dimension) => (
-              <div className="quiz-score-row" key={dimension.key}>
-                <div>
-                  <strong>{dimension.label}</strong>
-                  <span>{dimension.percent}%</span>
+          {result.grouped ? (
+            <LifoProfile result={result} copy={copy} />
+          ) : (
+            <div className="quiz-score-card">
+              <h3>{copy.scoreBreakdown}</h3>
+              {result.dimensions.map((dimension) => (
+                <div className="quiz-score-row" key={dimension.key}>
+                  <div>
+                    <strong>{dimension.label}</strong>
+                    <span>{dimension.percent}%</span>
+                  </div>
+                  <i>
+                    <b style={{ width: `${dimension.percent}%`, background: dimension.color }} />
+                  </i>
                 </div>
-                <i>
-                  <b style={{ width: `${dimension.percent}%`, background: dimension.color }} />
-                </i>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
           {relatedTests.length > 0 && (
             <section className="quiz-related" aria-labelledby="quiz-related-title">
               <h3 id="quiz-related-title">{copy.moreQuizzes}</h3>
@@ -859,7 +973,7 @@ function ResultCardContent({ result, localizedTest, copy, titleId }) {
         <strong>{percent}%</strong>
       </div>
       <h2 id={titleId}>{result.primary.title}</h2>
-      {result.secondary && <h3>{copy.secondaryPattern}: {result.secondary.title}</h3>}
+      {result.secondary && <h3>{result.grouped ? copy.stressLabel : copy.secondaryPattern}: {result.secondary.title}</h3>}
       <p>{result.primary.summary}</p>
       <div className="quiz-result-theme-bar">
         <i style={{ width: `${result.primary.percent}%` }} />
@@ -875,6 +989,56 @@ function ResultCardContent({ result, localizedTest, copy, titleId }) {
         <strong>personalitycalculator.org</strong>
       </div>
     </>
+  );
+}
+
+function LifoProfile({ result, copy }) {
+  const { styles, primaryStyle, backupStyle } = result;
+  const shifts = backupStyle.group !== primaryStyle.group;
+  return (
+    <div className="quiz-score-card quiz-lifo-profile">
+      <h3>{copy.styleProfile}</h3>
+      <p className="quiz-lifo-lead">{copy.lifoLead(primaryStyle, backupStyle, shifts)}</p>
+      <div className="quiz-lifo-rows">
+        {styles.map((style) => (
+          <div className="quiz-lifo-row" key={style.group}>
+            <div className="quiz-lifo-row-head">
+              <strong>{style.groupLabel}</strong>
+              {style.group === primaryStyle.group && <span className="quiz-lifo-tag">{copy.primaryTag}</span>}
+              {shifts && style.group === backupStyle.group && (
+                <span className="quiz-lifo-tag is-stress">{copy.backupTag}</span>
+              )}
+            </div>
+            <div className="quiz-lifo-bars">
+              <div className="quiz-lifo-bar">
+                <span>{copy.favorableLabel}</span>
+                <i>
+                  <b style={{ width: `${style.favPercent}%`, background: style.color }} />
+                </i>
+                <em>{style.favPercent}%</em>
+              </div>
+              <div className="quiz-lifo-bar">
+                <span>{copy.stressLabel}</span>
+                <i>
+                  <b className="is-stress" style={{ width: `${style.strPercent}%`, background: style.color }} />
+                </i>
+                <em>{style.strPercent}%</em>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      {backupStyle.overdone.length > 0 && (
+        <div className="quiz-lifo-overdone">
+          <h4>{copy.overdoneTitle(backupStyle.groupLabel)}</h4>
+          <ul>
+            {backupStyle.overdone.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 }
 

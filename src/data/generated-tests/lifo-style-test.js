@@ -10,119 +10,291 @@ export default {
   "slug": "lifo-style-test",
   "title": "LIFO Strengths Style Test",
   "category": "Career",
-  "time": "6 min",
-  "intro": "Find how your strengths show up under normal conditions and pressure: supporting, controlling, conserving, or adapting.",
-  "notice": "This is an original strengths reflection quiz inspired by LIFO-style categories, not the official assessment.",
+  "time": "7 min",
+  "intro": "Each of your four strengths shows up one way at your best and a different way under pressure. This quiz measures both conditions, then shows your primary style, the backup you fall to under stress, and where a strength can be overdone.",
+  "notice": "Inspired by the LIFO® Life Orientations framework (Atkins & Katcher). This is an original reflection quiz using its four strength styles, not the official assessment, and is not for selection decisions.",
   "dimensions": [
     {
-      "key": "supporting",
+      "key": "supporting-fav",
       "label": "Supporting",
       "title": "Supporting-Giving",
-      "summary": "You lead with helpfulness, values, encouragement, and contribution.",
+      "group": "supporting",
+      "groupLabel": "Supporting-Giving",
+      "condition": "favorable",
+      "color": "#6b43ef",
+      "summary": "At your best, you lead with trust, service, and high ideals — you help others succeed and hold work to a principled standard.",
       "strengths": [
-        "Service",
-        "Idealism",
-        "Encouragement"
+        "Helping and developing others",
+        "Loyalty and trust",
+        "Working to high ideals"
       ],
       "growth": [
-        "Do not over-give past capacity"
-      ],
-      "color": "#6b43ef"
+        "Moderate over-giving: name what you need before you are depleted",
+        "State your own priorities, not only what others need"
+      ]
     },
     {
-      "key": "controlling",
+      "key": "supporting-str",
+      "label": "Supporting (stress)",
+      "title": "Supporting-Giving under pressure",
+      "group": "supporting",
+      "groupLabel": "Supporting-Giving",
+      "condition": "stress",
+      "color": "#6b43ef",
+      "summary": "Under pressure, giving can tip into self-sacrifice — you may over-trust, over-explain your good intent, or put everyone else first until you burn out.",
+      "overdone": [
+        "Self-sacrificing to the point of depletion",
+        "Deferring or trusting too readily",
+        "Moralizing instead of deciding"
+      ]
+    },
+    {
+      "key": "controlling-fav",
       "label": "Controlling",
       "title": "Controlling-Taking",
-      "summary": "You take charge, act decisively, and push toward results.",
+      "group": "controlling",
+      "groupLabel": "Controlling-Taking",
+      "condition": "favorable",
+      "color": "#2f74ef",
+      "summary": "At your best, you seize opportunity, set direction, and drive quickly toward results — you take the ownership others avoid.",
       "strengths": [
-        "Action",
-        "Confidence",
-        "Problem solving"
+        "Taking initiative",
+        "Deciding under uncertainty",
+        "Driving results"
       ],
       "growth": [
-        "Listen before accelerating"
-      ],
-      "color": "#2f74ef"
+        "Listen and invite dissent before you accelerate",
+        "Delegate ownership instead of absorbing it all"
+      ]
     },
     {
-      "key": "conserving",
+      "key": "controlling-str",
+      "label": "Controlling (stress)",
+      "title": "Controlling-Taking under pressure",
+      "group": "controlling",
+      "groupLabel": "Controlling-Taking",
+      "condition": "stress",
+      "color": "#2f74ef",
+      "summary": "Under pressure, drive can harden into control — you may push, override others, or move so fast that input gets cut off.",
+      "overdone": [
+        "Domineering or coercive",
+        "Impatient with slower input",
+        "Overconfident and overcommitted"
+      ]
+    },
+    {
+      "key": "conserving-fav",
       "label": "Conserving",
       "title": "Conserving-Holding",
-      "summary": "You preserve resources, standards, accuracy, and careful judgment.",
+      "group": "conserving",
+      "groupLabel": "Conserving-Holding",
+      "condition": "favorable",
+      "color": "#18a88a",
+      "summary": "At your best, you analyze, systematize, and protect quality — you make careful, evidence-based decisions and conserve resources.",
       "strengths": [
-        "Discipline",
-        "Quality",
-        "Risk control"
+        "Analysis and rigor",
+        "Consistency and quality",
+        "Prudent risk control"
       ],
       "growth": [
-        "Avoid holding back useful change"
-      ],
-      "color": "#18a88a"
+        "Set a decision deadline so analysis converts to action",
+        "Test small changes instead of defending the status quo"
+      ]
     },
     {
-      "key": "adapting",
+      "key": "conserving-str",
+      "label": "Conserving (stress)",
+      "title": "Conserving-Holding under pressure",
+      "group": "conserving",
+      "groupLabel": "Conserving-Holding",
+      "condition": "stress",
+      "color": "#18a88a",
+      "summary": "Under pressure, caution can turn into rigidity — you may over-analyze, resist useful change, or hold on to resources and control too tightly.",
+      "overdone": [
+        "Over-analyzing past the decision point",
+        "Rigid and change-resistant",
+        "Withholding resources or information"
+      ]
+    },
+    {
+      "key": "adapting-fav",
       "label": "Adapting",
       "title": "Adapting-Dealing",
-      "summary": "You flex, negotiate, connect, and keep options moving.",
+      "group": "adapting",
+      "groupLabel": "Adapting-Dealing",
+      "condition": "favorable",
+      "color": "#f08a24",
+      "summary": "At your best, you read people, stay flexible, and find practical common ground — you keep relationships and options moving.",
       "strengths": [
-        "Flexibility",
-        "Influence",
-        "Pragmatism"
+        "Reading people and context",
+        "Flexibility and tact",
+        "Building agreement"
       ],
       "growth": [
-        "Anchor choices in clear priorities"
-      ],
-      "color": "#f08a24"
+        "Anchor flexible choices to a few non-negotiable priorities",
+        "Say the hard thing even when it risks harmony"
+      ]
+    },
+    {
+      "key": "adapting-str",
+      "label": "Adapting (stress)",
+      "title": "Adapting-Dealing under pressure",
+      "group": "adapting",
+      "groupLabel": "Adapting-Dealing",
+      "condition": "stress",
+      "color": "#f08a24",
+      "summary": "Under pressure, adaptability can slide into people-pleasing — you may shift positions, avoid conflict, or stay so agreeable that your own stance disappears.",
+      "overdone": [
+        "Inconsistent or over-accommodating",
+        "Avoiding necessary conflict",
+        "Losing your own priorities to please others"
+      ]
     }
   ],
   "questions": [
     {
-      "dimension": "supporting",
-      "text": "You naturally ask how work can help people.",
+      "dimension": "supporting-fav",
+      "text": "When work is going well, you look for ways your effort can help other people succeed.",
       "reverse": false,
       "id": "lifo-style-test-1"
     },
     {
-      "dimension": "supporting",
-      "text": "Encouraging others is one of your strengths.",
+      "dimension": "supporting-fav",
+      "text": "You hold yourself to high ideals about how work should be done.",
       "reverse": false,
       "id": "lifo-style-test-2"
     },
     {
-      "dimension": "controlling",
-      "text": "You move quickly when a problem needs ownership.",
-      "reverse": false,
+      "dimension": "supporting-fav",
+      "text": "Even at your best, you rarely go out of your way to support colleagues.",
+      "reverse": true,
       "id": "lifo-style-test-3"
     },
     {
-      "dimension": "controlling",
-      "text": "You are comfortable making things happen directly.",
+      "dimension": "controlling-fav",
+      "text": "When you see an opening, you take charge and set the direction.",
       "reverse": false,
       "id": "lifo-style-test-4"
     },
     {
-      "dimension": "conserving",
-      "text": "You protect quality and resources carefully.",
+      "dimension": "controlling-fav",
+      "text": "You are comfortable making a decision before every detail is settled.",
       "reverse": false,
       "id": "lifo-style-test-5"
     },
     {
-      "dimension": "conserving",
-      "text": "You prefer evidence before changing a working system.",
+      "dimension": "controlling-fav",
+      "text": "You are the one who pushes a stalled project toward a result.",
       "reverse": false,
       "id": "lifo-style-test-6"
     },
     {
-      "dimension": "adapting",
-      "text": "You can adjust your approach to fit the situation.",
+      "dimension": "conserving-fav",
+      "text": "You prefer to weigh the evidence carefully before deciding.",
       "reverse": false,
       "id": "lifo-style-test-7"
     },
     {
-      "dimension": "adapting",
-      "text": "You find practical ways to keep people and options moving.",
+      "dimension": "conserving-fav",
+      "text": "You protect quality and use resources efficiently.",
       "reverse": false,
       "id": "lifo-style-test-8"
+    },
+    {
+      "dimension": "conserving-fav",
+      "text": "At your best, you will change a working system without needing much analysis first.",
+      "reverse": true,
+      "id": "lifo-style-test-9"
+    },
+    {
+      "dimension": "adapting-fav",
+      "text": "You adjust your approach easily to fit the people and the situation.",
+      "reverse": false,
+      "id": "lifo-style-test-10"
+    },
+    {
+      "dimension": "adapting-fav",
+      "text": "You are good at finding practical common ground when people disagree.",
+      "reverse": false,
+      "id": "lifo-style-test-11"
+    },
+    {
+      "dimension": "adapting-fav",
+      "text": "You read the mood of a room and respond to it.",
+      "reverse": false,
+      "id": "lifo-style-test-12"
+    },
+    {
+      "dimension": "supporting-str",
+      "text": "Under pressure, you keep giving to others even after you are drained.",
+      "reverse": false,
+      "id": "lifo-style-test-13"
+    },
+    {
+      "dimension": "supporting-str",
+      "text": "When stressed, you over-explain your good intentions to keep everyone’s trust.",
+      "reverse": false,
+      "id": "lifo-style-test-14"
+    },
+    {
+      "dimension": "supporting-str",
+      "text": "Under pressure, you put others’ needs ahead of your own until you burn out.",
+      "reverse": false,
+      "id": "lifo-style-test-15"
+    },
+    {
+      "dimension": "controlling-str",
+      "text": "Under pressure, you take over and push harder to force a result.",
+      "reverse": false,
+      "id": "lifo-style-test-16"
+    },
+    {
+      "dimension": "controlling-str",
+      "text": "When stressed, you get impatient with people who slow things down.",
+      "reverse": false,
+      "id": "lifo-style-test-17"
+    },
+    {
+      "dimension": "controlling-str",
+      "text": "Under pressure, you commit to more than is realistic so you stay in control.",
+      "reverse": false,
+      "id": "lifo-style-test-18"
+    },
+    {
+      "dimension": "conserving-str",
+      "text": "Under pressure, you keep analyzing instead of deciding.",
+      "reverse": false,
+      "id": "lifo-style-test-19"
+    },
+    {
+      "dimension": "conserving-str",
+      "text": "When stressed, you resist changes even when the current way is failing.",
+      "reverse": false,
+      "id": "lifo-style-test-20"
+    },
+    {
+      "dimension": "conserving-str",
+      "text": "Under pressure, you hold on tightly to resources, control, or information.",
+      "reverse": false,
+      "id": "lifo-style-test-21"
+    },
+    {
+      "dimension": "adapting-str",
+      "text": "Under pressure, you shift your position to avoid a conflict.",
+      "reverse": false,
+      "id": "lifo-style-test-22"
+    },
+    {
+      "dimension": "adapting-str",
+      "text": "When stressed, you agree on the outside even when you disagree.",
+      "reverse": false,
+      "id": "lifo-style-test-23"
+    },
+    {
+      "dimension": "adapting-str",
+      "text": "Under pressure, you go along with others and lose track of your own priorities.",
+      "reverse": false,
+      "id": "lifo-style-test-24"
     }
   ]
 };
