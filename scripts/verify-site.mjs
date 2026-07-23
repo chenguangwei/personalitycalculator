@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { filterTestsBySearch, getSearchPreviewTests } from '../src/pages/home/searchUtils.js';
 import { GENERIC_TESTS } from '../src/pages/quiz/genericTestData.js';
 import { GENERATED_TEST_CATALOG } from '../src/data/generatedTestCatalog.js';
+import { TEST_TRANSLATIONS } from '../src/data/testTranslations.js';
 
 const errors = [];
 const REQUIRED_LIBRARY_EXPANSION_SLUGS = [
@@ -431,8 +432,35 @@ function verifyHomepageSearch() {
   assert(previewResults.length > 0 && previewResults.length <= 6, 'Homepage search preview is not capped');
 }
 
+function verifyTestTranslations() {
+  const testsBySlug = new Map(GENERIC_TESTS.map((test) => [test.slug, test]));
+
+  Object.entries(TEST_TRANSLATIONS).forEach(([locale, entries]) => {
+    Object.entries(entries).forEach(([slug, translated]) => {
+      const test = testsBySlug.get(slug);
+      // Non-generic pages (MBTI, Tomodachi, avatar cards) are translated here
+      // too but live outside GENERIC_TESTS; only slug-matched tests are checked.
+      if (!test) return;
+
+      if (Array.isArray(translated.questions)) {
+        assert(
+          translated.questions.length === test.questions.length,
+          `Translation question count mismatch: ${locale}/${slug} has ${translated.questions.length}, test has ${test.questions.length}`,
+        );
+      }
+      if (translated.dimensions) {
+        const dimensionKeys = new Set(test.dimensions.map((dimension) => dimension.key));
+        Object.keys(translated.dimensions).forEach((key) => {
+          assert(dimensionKeys.has(key), `Translation references unknown dimension: ${locale}/${slug}:${key}`);
+        });
+      }
+    });
+  });
+}
+
 const catalog = verifyCatalog();
 const builtPages = verifyBuiltPages();
+verifyTestTranslations();
 verifyTomodachiHelp();
 verifyCatalogBundleBoundary();
 verifyCoreEntrypoints();

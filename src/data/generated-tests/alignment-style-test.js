@@ -8,174 +8,429 @@ export default {
     "Strongly Agree"
   ],
   "slug": "alignment-style-test",
-  "title": "Alignment Style Test",
+  "title": "Moral Alignment Test",
   "category": "Fun",
-  "time": "6 min",
-  "intro": "A fantasy-inspired alignment quiz mapping how you balance rules, freedom, compassion, and self-interest.",
+  "time": "7 min",
+  "mode": "alignment",
+  "axes": [
+    {
+      "key": "order",
+      "left": "lawful",
+      "right": "chaotic"
+    },
+    {
+      "key": "morality",
+      "left": "good",
+      "right": "self"
+    }
+  ],
+  "matrix": {
+    "rows": [
+      "rowGood",
+      "rowNeutral",
+      "rowEvil"
+    ],
+    "cols": [
+      "colLawful",
+      "colNeutral",
+      "colChaotic"
+    ],
+    "labels": {
+      "rowGood": "Good",
+      "rowNeutral": "Neutral",
+      "rowEvil": "Evil",
+      "colLawful": "Lawful",
+      "colNeutral": "Neutral",
+      "colChaotic": "Chaotic"
+    }
+  },
+  "intro": "Where do you land on the classic nine-alignment chart? 24 statements score you on two axes — Lawful ↔ Chaotic and Good ↔ Self-Interest — and place you in one of nine moral alignments, from Lawful Good to Chaotic Evil. Question themes draw on constructs from Moral Foundations Theory, the HEXACO honesty–humility dimension, and Schwartz's theory of basic values.",
+  "notice": "The nine-alignment chart was popularized by tabletop role-playing games; this is an original, unaffiliated quiz. It is inspired by — not validated against — published psychology research, and is meant for entertainment and self-reflection, not professional assessment.",
   "dimensions": [
     {
-      "key": "lawfulGood",
-      "label": "Lawful Good",
-      "title": "Principled Protector",
-      "summary": "You value doing good through responsibility, order, and clear standards.",
+      "key": "lawful",
+      "role": "pole",
+      "axis": "order",
+      "label": "Lawful",
+      "title": "Order & Structure",
+      "summary": "You lean on rules, commitments, and predictable systems.",
       "strengths": [
-        "Duty",
-        "Integrity",
-        "Protection"
+        "Reliability",
+        "Discipline",
+        "Fair process"
       ],
       "growth": [
-        "Avoid rigidity when mercy is needed"
+        "Question rules that stop serving people"
       ],
       "color": "#6b43ef"
     },
     {
-      "key": "neutralGood",
-      "label": "Neutral Good",
-      "title": "Practical Helper",
-      "summary": "You value helping people more than preserving any one rule system.",
+      "key": "chaotic",
+      "role": "pole",
+      "axis": "order",
+      "label": "Chaotic",
+      "title": "Freedom & Instinct",
+      "summary": "You lean on personal judgment, improvisation, and freedom.",
       "strengths": [
-        "Compassion",
-        "Pragmatism",
-        "Fairness"
+        "Adaptability",
+        "Independence",
+        "Speed"
       ],
       "growth": [
-        "Keep boundaries while helping"
+        "Price the cost of unpredictability"
+      ],
+      "color": "#f08a24"
+    },
+    {
+      "key": "good",
+      "role": "pole",
+      "axis": "morality",
+      "label": "Good",
+      "title": "Altruism & Care",
+      "summary": "You weigh choices by their impact on other people.",
+      "strengths": [
+        "Compassion",
+        "Protection",
+        "Generosity"
+      ],
+      "growth": [
+        "Keep helping sustainable"
+      ],
+      "color": "#18a88a"
+    },
+    {
+      "key": "self",
+      "role": "pole",
+      "axis": "morality",
+      "label": "Self-Interest",
+      "title": "Self-Interest & Strategy",
+      "summary": "You weigh choices by position, leverage, and self-preservation.",
+      "strengths": [
+        "Realism",
+        "Strategy",
+        "Self-protection"
+      ],
+      "growth": [
+        "Check whether advantage is eroding trust"
+      ],
+      "color": "#e84b72"
+    },
+    {
+      "key": "lawful-good",
+      "role": "type",
+      "row": "rowGood",
+      "col": "colLawful",
+      "label": "Lawful Good",
+      "title": "Lawful Good · The Honorable Guardian",
+      "summary": "You do good by the book: duty kept, promises honored, the vulnerable protected. The archetype of the oath-keeping knight — order in service of compassion.",
+      "strengths": [
+        "Integrity",
+        "Duty",
+        "Protection"
+      ],
+      "growth": [
+        "Let mercy outrank the letter of the rule sometimes",
+        "Not every failing needs a verdict"
       ],
       "color": "#2f74ef"
     },
     {
-      "key": "chaoticGood",
+      "key": "neutral-good",
+      "role": "type",
+      "row": "rowGood",
+      "col": "colNeutral",
+      "label": "Neutral Good",
+      "title": "Neutral Good · The Kind Pragmatist",
+      "summary": "You help wherever help is needed — with rules when they work, around them when they don't. The archetype of the traveling healer: outcome over doctrine.",
+      "strengths": [
+        "Compassion",
+        "Flexibility",
+        "Fairness"
+      ],
+      "growth": [
+        "Keep boundaries while helping",
+        "Decide what you stand for, not just against"
+      ],
+      "color": "#18a88a"
+    },
+    {
+      "key": "chaotic-good",
+      "role": "type",
+      "row": "rowGood",
+      "col": "colChaotic",
       "label": "Chaotic Good",
-      "title": "Free-Spirited Advocate",
-      "summary": "You value freedom and justice even when rules get in the way.",
+      "title": "Chaotic Good · The Benevolent Rebel",
+      "summary": "Your conscience outranks any rulebook: you'll break an unjust rule without blinking to protect someone. The Robin Hood archetype — freedom in service of kindness.",
       "strengths": [
         "Courage",
         "Independence",
         "Moral energy"
       ],
       "growth": [
-        "Consider unintended consequences"
+        "Consider the collateral of broken systems",
+        "Build alternatives, not just exceptions"
       ],
-      "color": "#18a88a"
+      "color": "#8a5cf6"
     },
     {
-      "key": "trueNeutral",
+      "key": "lawful-neutral",
+      "role": "type",
+      "row": "rowNeutral",
+      "col": "colLawful",
+      "label": "Lawful Neutral",
+      "title": "Lawful Neutral · The Arbiter",
+      "summary": "The system itself is your compass: consistent, impartial, incorruptible. The archetype of the judge who rules the same for friend and stranger.",
+      "strengths": [
+        "Consistency",
+        "Objectivity",
+        "Reliability"
+      ],
+      "growth": [
+        "Remember what the rules are for",
+        "Make room for justified exceptions"
+      ],
+      "color": "#6b43ef"
+    },
+    {
+      "key": "true-neutral",
+      "role": "type",
+      "row": "rowNeutral",
+      "col": "colNeutral",
       "label": "True Neutral",
-      "title": "Balanced Observer",
-      "summary": "You value balance, context, and avoiding unnecessary extremes.",
+      "title": "True Neutral · The Balanced Observer",
+      "summary": "You sit at the exact center of the chart: context over ideology, balance over crusades. The archetype of the watchful druid — every force in proportion.",
       "strengths": [
         "Perspective",
         "Adaptability",
         "Restraint"
       ],
       "growth": [
-        "Take a stand when needed"
+        "Take a side when it truly matters",
+        "Neutrality can be a choice too — own it"
       ],
       "color": "#f08a24"
     },
     {
-      "key": "lawfulNeutral",
-      "label": "Lawful Neutral",
-      "title": "Rule Keeper",
-      "summary": "You value consistency, process, and stable expectations.",
-      "strengths": [
-        "Structure",
-        "Reliability",
-        "Objectivity"
-      ],
-      "growth": [
-        "Let rules serve people"
-      ],
-      "color": "#e84b72"
-    },
-    {
-      "key": "chaoticNeutral",
+      "key": "chaotic-neutral",
+      "role": "type",
+      "row": "rowNeutral",
+      "col": "colChaotic",
       "label": "Chaotic Neutral",
-      "title": "Independent Wildcard",
-      "summary": "You value personal freedom, experimentation, and self-direction.",
+      "title": "Chaotic Neutral · The Free Spirit",
+      "summary": "Your own path, your own rules, your own definition of a life well lived. The archetype of the wandering trickster — beholden to no one, curious about everything.",
       "strengths": [
         "Originality",
         "Autonomy",
         "Spontaneity"
       ],
       "growth": [
-        "Keep commitments visible"
+        "Keep the commitments you choose to make",
+        "Freedom shared beats freedom defended"
       ],
-      "color": "#8a5cf6"
+      "color": "#0ea5e9"
+    },
+    {
+      "key": "lawful-evil",
+      "role": "type",
+      "row": "rowEvil",
+      "col": "colLawful",
+      "label": "Lawful Evil",
+      "title": "Lawful Evil · The Strategist",
+      "summary": "You play the game exactly by its rules — and play it to win. The archetype of the iron chancellor: contracts honored, advantage compounded, sentiment optional.",
+      "strengths": [
+        "Strategy",
+        "Discipline",
+        "Long-game thinking"
+      ],
+      "growth": [
+        "Winning every clause can lose the relationship",
+        "Power is safest when others also benefit"
+      ],
+      "color": "#64748b"
+    },
+    {
+      "key": "neutral-evil",
+      "role": "type",
+      "row": "rowEvil",
+      "col": "colNeutral",
+      "label": "Neutral Evil",
+      "title": "Neutral Evil · The Opportunist",
+      "summary": "Rules, causes, factions — all just weather. You read the board and take what the moment offers. The archetype of the calculating mercenary: unsentimental, effective, unbound.",
+      "strengths": [
+        "Realism",
+        "Efficiency",
+        "Composure"
+      ],
+      "growth": [
+        "Reputation is an asset you can't rebuy cheaply",
+        "Some alliances are worth honoring past their utility"
+      ],
+      "color": "#e84b72"
+    },
+    {
+      "key": "chaotic-evil",
+      "role": "type",
+      "row": "rowEvil",
+      "col": "colChaotic",
+      "label": "Chaotic Evil",
+      "title": "Chaotic Evil · The Storm",
+      "summary": "No leash, no ledger: you answer to appetite and impulse, and constraints exist to be tested. The archetype of the storm — pure force, thrilling and costly.",
+      "strengths": [
+        "Fearlessness",
+        "Intensity",
+        "Unpredictability"
+      ],
+      "growth": [
+        "Burn fuel, not bridges",
+        "Aim the intensity at something worth breaking"
+      ],
+      "color": "#d946ef"
     }
   ],
   "questions": [
     {
-      "dimension": "lawfulGood",
-      "text": "Rules matter most when they protect people.",
+      "dimension": "lawful",
+      "text": "You follow the queue, the deadline, and the fine print — even when nobody is checking.",
       "reverse": false,
       "id": "alignment-style-test-1"
     },
     {
-      "dimension": "lawfulGood",
-      "text": "You feel responsible for doing the right thing.",
+      "dimension": "chaotic",
+      "text": "You would rather ask forgiveness than permission.",
       "reverse": false,
       "id": "alignment-style-test-2"
     },
     {
-      "dimension": "neutralGood",
-      "text": "Helping people matters more than defending a system.",
+      "dimension": "good",
+      "text": "You would return a lost wallet untouched even if no one could ever know.",
       "reverse": false,
       "id": "alignment-style-test-3"
     },
     {
-      "dimension": "neutralGood",
-      "text": "You choose the kindest practical option.",
+      "dimension": "self",
+      "text": "In any negotiation, your first duty is to your own side of the table.",
       "reverse": false,
       "id": "alignment-style-test-4"
     },
     {
-      "dimension": "chaoticGood",
-      "text": "You would break an unfair rule to protect someone.",
+      "dimension": "lawful",
+      "text": "A clear set of rules makes you feel free, not trapped.",
       "reverse": false,
       "id": "alignment-style-test-5"
     },
     {
-      "dimension": "chaoticGood",
-      "text": "Freedom and justice matter deeply to you.",
+      "dimension": "chaotic",
+      "text": "Being told \"that's how it's always been done\" makes you want to do the opposite.",
       "reverse": false,
       "id": "alignment-style-test-6"
     },
     {
-      "dimension": "trueNeutral",
-      "text": "You try to understand all sides before acting.",
+      "dimension": "good",
+      "text": "Seeing a stranger treated unfairly bothers you for the rest of the day.",
       "reverse": false,
       "id": "alignment-style-test-7"
     },
     {
-      "dimension": "trueNeutral",
-      "text": "Balance matters more than dramatic gestures.",
+      "dimension": "self",
+      "text": "You notice how each choice affects your position and leverage.",
       "reverse": false,
       "id": "alignment-style-test-8"
     },
     {
-      "dimension": "lawfulNeutral",
-      "text": "Consistent rules keep groups functional.",
+      "dimension": "lawful",
+      "text": "When a group has no structure, you are the one who proposes some.",
       "reverse": false,
       "id": "alignment-style-test-9"
     },
     {
-      "dimension": "lawfulNeutral",
-      "text": "You trust process more than impulse.",
+      "dimension": "chaotic",
+      "text": "You trust your gut over the official procedure.",
       "reverse": false,
       "id": "alignment-style-test-10"
     },
     {
-      "dimension": "chaoticNeutral",
-      "text": "You dislike being boxed in by expectations.",
+      "dimension": "good",
+      "text": "You would take a personal loss to protect someone vulnerable.",
       "reverse": false,
       "id": "alignment-style-test-11"
     },
     {
-      "dimension": "chaoticNeutral",
-      "text": "You prefer choosing your own path.",
+      "dimension": "self",
+      "text": "Looking out for yourself first is realistic, not selfish.",
       "reverse": false,
       "id": "alignment-style-test-12"
+    },
+    {
+      "dimension": "lawful",
+      "text": "You honor commitments even after they stop being convenient.",
+      "reverse": false,
+      "id": "alignment-style-test-13"
+    },
+    {
+      "dimension": "chaotic",
+      "text": "Spontaneous detours are the best part of any plan.",
+      "reverse": false,
+      "id": "alignment-style-test-14"
+    },
+    {
+      "dimension": "good",
+      "text": "Kindness is worth it even when it is never repaid.",
+      "reverse": false,
+      "id": "alignment-style-test-15"
+    },
+    {
+      "dimension": "self",
+      "text": "You would use a competitor's mistake to your advantage without hesitation.",
+      "reverse": false,
+      "id": "alignment-style-test-16"
+    },
+    {
+      "dimension": "lawful",
+      "text": "If a rule slows you down, you treat it as a suggestion.",
+      "reverse": true,
+      "id": "alignment-style-test-17"
+    },
+    {
+      "dimension": "chaotic",
+      "text": "You feel calmer when every step is planned in advance.",
+      "reverse": true,
+      "id": "alignment-style-test-18"
+    },
+    {
+      "dimension": "good",
+      "text": "Other people's problems are theirs to solve, not yours.",
+      "reverse": true,
+      "id": "alignment-style-test-19"
+    },
+    {
+      "dimension": "self",
+      "text": "You often put other people's needs ahead of your own.",
+      "reverse": true,
+      "id": "alignment-style-test-20"
+    },
+    {
+      "dimension": "lawful",
+      "text": "Improvising on the spot beats following a plan.",
+      "reverse": true,
+      "id": "alignment-style-test-21"
+    },
+    {
+      "dimension": "chaotic",
+      "text": "You double-check what is allowed before trying something new.",
+      "reverse": true,
+      "id": "alignment-style-test-22"
+    },
+    {
+      "dimension": "good",
+      "text": "Before helping someone, you quietly weigh what it costs you.",
+      "reverse": true,
+      "id": "alignment-style-test-23"
+    },
+    {
+      "dimension": "self",
+      "text": "You share credit even when you could quietly keep it.",
+      "reverse": true,
+      "id": "alignment-style-test-24"
     }
   ]
 };

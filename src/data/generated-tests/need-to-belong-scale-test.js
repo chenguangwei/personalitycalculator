@@ -8,145 +8,167 @@ export default {
     "Strongly Agree"
   ],
   "slug": "need-to-belong-scale-test",
-  "title": "Need to Belong Scale Style Test",
+  "title": "Need to Belong Scale Test",
   "category": "Social",
-  "time": "6 min",
-  "intro": "Understand your belonging needs across acceptance, closeness, group connection, rejection sensitivity, and independence.",
+  "time": "4 min",
+  "mode": "scale",
+  "scale": {
+    "dimension": "belong",
+    "min": 10,
+    "max": 50
+  },
+  "intro": "How strongly do you need acceptance and connection? Answer 10 research-style questions to get a single belonging score from 10 to 50 — most adults land in the low 30s — and see what your band says about how you handle inclusion, exclusion, and time alone.",
+  "notice": "Informed by the Need to Belong Scale (Leary, Kelly, Cottrell & Schreindorfer, 2013). This is an educational self-reflection version with rewritten items, not the official instrument, and not a diagnostic tool.",
   "dimensions": [
     {
-      "key": "acceptance",
-      "label": "Acceptance",
-      "title": "Acceptance Need",
-      "summary": "You want to feel welcomed, included, and positively regarded.",
-      "strengths": [
-        "Connection",
-        "Warmth",
-        "Belonging"
-      ],
-      "growth": [
-        "Keep self-worth broader than approval"
-      ],
+      "key": "belong",
+      "role": "total",
+      "label": "Need to Belong",
+      "title": "Need to Belong",
+      "summary": "How strongly you desire acceptance and feel the sting of exclusion.",
+      "strengths": [],
+      "growth": [],
       "color": "#6b43ef"
     },
     {
-      "key": "closeness",
-      "label": "Closeness",
-      "title": "Close Bond Need",
-      "summary": "You seek stable, emotionally meaningful relationships.",
+      "key": "low",
+      "band": [
+        10,
+        22
+      ],
+      "label": "Low",
+      "title": "Low Need to Belong",
+      "summary": "Connection is a pleasure for you, not a requirement. You enjoy people on your own terms, recover quickly from exclusion, and genuinely like your own company.",
       "strengths": [
-        "Attachment",
-        "Loyalty",
-        "Depth"
+        "Self-sufficiency",
+        "Low social anxiety",
+        "Comfort in solitude"
       ],
       "growth": [
-        "Balance closeness with space"
+        "Check that independence is a choice, not armor",
+        "Invest in a few bonds before you need them"
       ],
       "color": "#2f74ef"
     },
     {
-      "key": "group",
-      "label": "Group",
-      "title": "Group Belonging Need",
-      "summary": "You value being part of teams, communities, or shared identities.",
+      "key": "moderate",
+      "band": [
+        23,
+        31
+      ],
+      "label": "Moderate",
+      "title": "Moderate Need to Belong",
+      "summary": "You sit near the typical adult score. Belonging matters to you, but your self-worth does not swing on every invitation, and you can enjoy both company and solitude.",
       "strengths": [
-        "Community",
-        "Participation",
-        "Shared purpose"
+        "Balanced social appetite",
+        "Steady under mild exclusion",
+        "Flexible between group and solo life"
       ],
       "growth": [
-        "Keep individuality visible"
+        "Notice which relationships you are quietly under-investing in",
+        "Say when belonging matters more than you show"
       ],
       "color": "#18a88a"
     },
     {
-      "key": "rejection",
-      "label": "Rejection",
-      "title": "Rejection Sensitivity",
-      "summary": "Signals of exclusion or disapproval affect you strongly.",
+      "key": "high",
+      "band": [
+        32,
+        40
+      ],
+      "label": "High",
+      "title": "High Need to Belong",
+      "summary": "Acceptance is a real engine for you. You invest generously in people, feel exclusion keenly, and often become the glue that holds groups together.",
       "strengths": [
-        "Awareness",
-        "Care",
-        "Social monitoring"
+        "Warmth and loyalty",
+        "Reading social signals early",
+        "Team glue"
       ],
       "growth": [
-        "Verify before personalizing"
+        "Keep self-worth broader than the latest response",
+        "Verify before treating silence as rejection"
       ],
       "color": "#f08a24"
     },
     {
-      "key": "independence",
-      "label": "Independence",
-      "title": "Belonging Independence",
-      "summary": "You can enjoy connection without needing constant reassurance.",
+      "key": "veryhigh",
+      "band": [
+        41,
+        50
+      ],
+      "label": "Very High",
+      "title": "Very High Need to Belong",
+      "summary": "Belonging sits at the center of your emotional life. You form deep attachments and give a lot — and signs of exclusion can hit hard enough to steer your choices.",
       "strengths": [
-        "Autonomy",
-        "Security",
-        "Self-trust"
+        "Deep loyalty",
+        "Emotional attunement",
+        "Building community around you"
       ],
       "growth": [
-        "Let safe support in"
+        "Build sources of worth that no group can revoke",
+        "Let one steady bond count for more than many signals"
       ],
       "color": "#e84b72"
     }
   ],
   "questions": [
     {
-      "dimension": "acceptance",
-      "text": "Feeling included matters strongly to you.",
-      "reverse": false,
+      "dimension": "belong",
+      "text": "If other people do not seem to accept you, it does not bother you much.",
+      "reverse": true,
       "id": "need-to-belong-scale-test-1"
     },
     {
-      "dimension": "acceptance",
-      "text": "You notice whether people seem glad you are there.",
+      "dimension": "belong",
+      "text": "You try hard not to do things that would make people avoid or reject you.",
       "reverse": false,
       "id": "need-to-belong-scale-test-2"
     },
     {
-      "dimension": "closeness",
-      "text": "Stable close relationships are central to your wellbeing.",
-      "reverse": false,
+      "dimension": "belong",
+      "text": "You rarely worry about whether other people care about you.",
+      "reverse": true,
       "id": "need-to-belong-scale-test-3"
     },
     {
-      "dimension": "closeness",
-      "text": "You want bonds that feel emotionally meaningful.",
+      "dimension": "belong",
+      "text": "You need to know there are people you can turn to when things go wrong.",
       "reverse": false,
       "id": "need-to-belong-scale-test-4"
     },
     {
-      "dimension": "group",
-      "text": "A shared community or team can energize you.",
+      "dimension": "belong",
+      "text": "You want other people to accept you.",
       "reverse": false,
       "id": "need-to-belong-scale-test-5"
     },
     {
-      "dimension": "group",
-      "text": "You like having a place where you clearly belong.",
-      "reverse": false,
+      "dimension": "belong",
+      "text": "Being away from your friends for long stretches does not bother you.",
+      "reverse": true,
       "id": "need-to-belong-scale-test-6"
     },
     {
-      "dimension": "rejection",
-      "text": "Possible exclusion stays on your mind.",
+      "dimension": "belong",
+      "text": "It stings when you find out you were not included in other people’s plans.",
       "reverse": false,
       "id": "need-to-belong-scale-test-7"
     },
     {
-      "dimension": "rejection",
-      "text": "Disapproval can affect you even when it is subtle.",
+      "dimension": "belong",
+      "text": "You have a strong sense of needing to belong somewhere.",
       "reverse": false,
       "id": "need-to-belong-scale-test-8"
     },
     {
-      "dimension": "independence",
-      "text": "You can spend time alone without feeling disconnected.",
+      "dimension": "belong",
+      "text": "Your feelings bruise easily when you sense that others do not want you around.",
       "reverse": false,
       "id": "need-to-belong-scale-test-9"
     },
     {
-      "dimension": "independence",
-      "text": "You do not need constant reassurance when trust is steady.",
+      "dimension": "belong",
+      "text": "You do not like being alone for long.",
       "reverse": false,
       "id": "need-to-belong-scale-test-10"
     }

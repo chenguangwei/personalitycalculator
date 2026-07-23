@@ -10,29 +10,35 @@ export default {
   "slug": "classic-jungian-type-test",
   "title": "Classic Jungian Type Test",
   "category": "Popular",
-  "time": "6 min",
-  "intro": "Find your classic Jungian preference pattern across attitude, perception, judgment, and dominant orientation.",
-  "dimensions": [
+  "time": "7 min",
+  "mode": "jungian",
+  "axes": [
     {
-      "key": "introversion",
-      "label": "Introversion",
-      "title": "Introverted Attitude",
-      "summary": "You orient inward first, checking reflection, meaning, and private energy.",
-      "strengths": [
-        "Reflection",
-        "Depth",
-        "Independence"
-      ],
-      "growth": [
-        "Share before everything is polished"
-      ],
-      "color": "#6b43ef"
+      "key": "attitude",
+      "left": "extraversion",
+      "right": "introversion"
     },
     {
+      "key": "perceiving",
+      "left": "sensation",
+      "right": "intuition"
+    },
+    {
+      "key": "judging",
+      "left": "thinking",
+      "right": "feeling"
+    }
+  ],
+  "intro": "Before the MBTI existed, C.G. Jung described eight psychological types in his 1921 classic Psychological Types — each defined by a dominant function (thinking, feeling, sensation, or intuition) turned inward or outward. Answer 24 questions to find which of the original eight you are.",
+  "notice": "Based on C.G. Jung’s Psychological Types (1921). An educational reflection of Jung’s original eight-type model — independent of, and predating, the MBTI®.",
+  "dimensions": [
+    {
       "key": "extraversion",
+      "role": "pole",
+      "axis": "attitude",
       "label": "Extraversion",
       "title": "Extraverted Attitude",
-      "summary": "You orient outward first, learning through activity, people, and expression.",
+      "summary": "Your energy flows outward first — toward people, objects, and action.",
       "strengths": [
         "Engagement",
         "Expression",
@@ -41,28 +47,32 @@ export default {
       "growth": [
         "Slow down for integration"
       ],
+      "color": "#6b43ef"
+    },
+    {
+      "key": "introversion",
+      "role": "pole",
+      "axis": "attitude",
+      "label": "Introversion",
+      "title": "Introverted Attitude",
+      "summary": "Your energy flows inward first — toward reflection, meaning, and the inner world.",
+      "strengths": [
+        "Reflection",
+        "Depth",
+        "Independence"
+      ],
+      "growth": [
+        "Share before everything is polished"
+      ],
       "color": "#2f74ef"
     },
     {
-      "key": "intuition",
-      "label": "Intuition",
-      "title": "Intuitive Perception",
-      "summary": "You perceive through symbols, patterns, possibilities, and implications.",
-      "strengths": [
-        "Imagination",
-        "Insight",
-        "Vision"
-      ],
-      "growth": [
-        "Attend to details that matter"
-      ],
-      "color": "#18a88a"
-    },
-    {
       "key": "sensation",
+      "role": "pole",
+      "axis": "perceiving",
       "label": "Sensation",
       "title": "Sensing Perception",
-      "summary": "You perceive through facts, experience, concrete signals, and reality testing.",
+      "summary": "You perceive through facts, senses, and concrete present reality.",
       "strengths": [
         "Observation",
         "Realism",
@@ -71,13 +81,32 @@ export default {
       "growth": [
         "Leave room for possibility"
       ],
+      "color": "#18a88a"
+    },
+    {
+      "key": "intuition",
+      "role": "pole",
+      "axis": "perceiving",
+      "label": "Intuition",
+      "title": "Intuitive Perception",
+      "summary": "You perceive through patterns, possibilities, and what things could become.",
+      "strengths": [
+        "Imagination",
+        "Insight",
+        "Vision"
+      ],
+      "growth": [
+        "Attend to details that matter"
+      ],
       "color": "#f08a24"
     },
     {
       "key": "thinking",
+      "role": "pole",
+      "axis": "judging",
       "label": "Thinking",
       "title": "Thinking Judgment",
-      "summary": "You judge by logic, structure, consistency, and principles.",
+      "summary": "You decide by logic, structure, and impersonal analysis.",
       "strengths": [
         "Logic",
         "Objectivity",
@@ -90,9 +119,11 @@ export default {
     },
     {
       "key": "feeling",
+      "role": "pole",
+      "axis": "judging",
       "label": "Feeling",
       "title": "Feeling Judgment",
-      "summary": "You judge by values, relationships, meaning, and human consequence.",
+      "summary": "You decide by values, meaning, and human consequence.",
       "strengths": [
         "Values",
         "Empathy",
@@ -102,80 +133,304 @@ export default {
         "Use structure to support values"
       ],
       "color": "#8a5cf6"
+    },
+    {
+      "key": "extraverted-thinking",
+      "role": "type",
+      "attitude": "extraversion",
+      "fn": "thinking",
+      "label": "The Organizer",
+      "title": "The Organizer · Extraverted Thinking Type",
+      "summary": "You order the outer world with logic: plans, standards, and objective rules. Jung saw this type as the executive of ideas — turning principles into working systems that others can run on.",
+      "strengths": [
+        "Building efficient systems",
+        "Decisive execution",
+        "Objective standards"
+      ],
+      "growth": [
+        "Feelings you ignore go underground — hear them before they erupt",
+        "Not every truth needs enforcing today"
+      ],
+      "color": "#0ea5e9"
+    },
+    {
+      "key": "introverted-thinking",
+      "role": "type",
+      "attitude": "introversion",
+      "fn": "thinking",
+      "label": "The Analyst",
+      "title": "The Analyst · Introverted Thinking Type",
+      "summary": "You pursue the inner architecture of ideas: precision, first principles, and theories that must cohere before they are spoken. Truth is built privately and defended rarely.",
+      "strengths": [
+        "Depth of analysis",
+        "Intellectual independence",
+        "Precise definitions"
+      ],
+      "growth": [
+        "Share drafts — the world can handle unfinished logic",
+        "Answer the question people actually asked"
+      ],
+      "color": "#d946ef"
+    },
+    {
+      "key": "extraverted-feeling",
+      "role": "type",
+      "attitude": "extraversion",
+      "fn": "feeling",
+      "label": "The Harmonizer",
+      "title": "The Harmonizer · Extraverted Feeling Type",
+      "summary": "You read and tend the emotional climate around you, building agreement, warmth, and shared occasions. Values live in public for you: expressed, negotiated, and celebrated.",
+      "strengths": [
+        "Creating cohesion",
+        "Social grace",
+        "Mobilizing goodwill"
+      ],
+      "growth": [
+        "Your own preference matters as much as the room’s",
+        "Let necessary conflict happen"
+      ],
+      "color": "#64748b"
+    },
+    {
+      "key": "introverted-feeling",
+      "role": "type",
+      "attitude": "introversion",
+      "fn": "feeling",
+      "label": "The Idealist",
+      "title": "The Idealist · Introverted Feeling Type",
+      "summary": "Your values run deep and quiet. You measure life against an inner code of what matters — felt intensely, shown selectively, and almost impossible to argue you out of.",
+      "strengths": [
+        "Moral depth",
+        "Loyalty to what matters",
+        "Quiet empathy"
+      ],
+      "growth": [
+        "Unspoken values cannot guide anyone — voice them",
+        "Test strong judgments against outside evidence"
+      ],
+      "color": "#6b43ef"
+    },
+    {
+      "key": "extraverted-sensation",
+      "role": "type",
+      "attitude": "extraversion",
+      "fn": "sensation",
+      "label": "The Realist",
+      "title": "The Realist · Extraverted Sensation Type",
+      "summary": "You live vividly in the concrete present — experience first, theory later. Facts, textures, tools, and real situations are your home ground, and you handle them with unusual composure.",
+      "strengths": [
+        "Practical realism",
+        "Sensory acuity",
+        "Composure in real events"
+      ],
+      "growth": [
+        "Ask what today’s experience costs tomorrow",
+        "Meaning is also a fact — make room for it"
+      ],
+      "color": "#2f74ef"
+    },
+    {
+      "key": "introverted-sensation",
+      "role": "type",
+      "attitude": "introversion",
+      "fn": "sensation",
+      "label": "The Curator",
+      "title": "The Curator · Introverted Sensation Type",
+      "summary": "You archive experience in fine detail, comparing every new moment against a rich inner record of how things have been. Your impressions are subjective, layered, and remarkably durable.",
+      "strengths": [
+        "Deep memory for detail",
+        "Steadiness and care",
+        "Quality control"
+      ],
+      "growth": [
+        "Treat the past as a reference, not a verdict",
+        "Say what you notice — your impressions are data"
+      ],
+      "color": "#18a88a"
+    },
+    {
+      "key": "extraverted-intuition",
+      "role": "type",
+      "attitude": "extraversion",
+      "fn": "intuition",
+      "label": "The Pioneer",
+      "title": "The Pioneer · Extraverted Intuition Type",
+      "summary": "You chase emerging possibility — new ventures, connections, and potentials others have not seen yet. Every situation is a door, and momentum is your natural medium.",
+      "strengths": [
+        "Spotting potential early",
+        "Igniting others",
+        "Reinvention"
+      ],
+      "growth": [
+        "Stay past the exciting part — harvest what you plant",
+        "Commitments are possibilities too"
+      ],
+      "color": "#f08a24"
+    },
+    {
+      "key": "introverted-intuition",
+      "role": "type",
+      "attitude": "introversion",
+      "fn": "intuition",
+      "label": "The Visionary",
+      "title": "The Visionary · Introverted Intuition Type",
+      "summary": "You perceive the deep patterns behind events — images of where things are heading arrive whole, and the work of your life is articulating them before the world catches up.",
+      "strengths": [
+        "Long-range insight",
+        "Symbolic depth",
+        "Original synthesis"
+      ],
+      "growth": [
+        "Translate the vision into steps others can walk",
+        "Check the inner image against outer facts"
+      ],
+      "color": "#e84b72"
     }
   ],
   "questions": [
     {
-      "dimension": "introversion",
-      "text": "You need inner space before you know what you think.",
+      "dimension": "extraversion",
+      "text": "Talking an idea through out loud helps you discover what you actually think.",
       "reverse": false,
       "id": "classic-jungian-type-test-1"
     },
     {
-      "dimension": "introversion",
-      "text": "Solitude helps you integrate experience.",
+      "dimension": "extraversion",
+      "text": "A busy, active environment usually raises your energy.",
       "reverse": false,
       "id": "classic-jungian-type-test-2"
     },
     {
       "dimension": "extraversion",
-      "text": "You often discover your view by talking or acting.",
+      "text": "You process events by engaging with the people and things around you.",
       "reverse": false,
       "id": "classic-jungian-type-test-3"
     },
     {
       "dimension": "extraversion",
-      "text": "External momentum helps you learn.",
+      "text": "After a full day alone, you feel pulled to seek out activity or company.",
       "reverse": false,
       "id": "classic-jungian-type-test-4"
     },
     {
-      "dimension": "intuition",
-      "text": "You notice what a situation could become.",
+      "dimension": "introversion",
+      "text": "You need private reflection before you trust your own conclusion.",
       "reverse": false,
       "id": "classic-jungian-type-test-5"
     },
     {
-      "dimension": "intuition",
-      "text": "Symbols and patterns catch your attention.",
+      "dimension": "introversion",
+      "text": "Depth in one conversation beats breadth across many.",
       "reverse": false,
       "id": "classic-jungian-type-test-6"
     },
     {
-      "dimension": "sensation",
-      "text": "You trust direct experience and concrete evidence.",
+      "dimension": "introversion",
+      "text": "Some of your richest experiences happen entirely inside your own mind.",
       "reverse": false,
       "id": "classic-jungian-type-test-7"
     },
     {
-      "dimension": "sensation",
-      "text": "Details from real life shape your judgment.",
+      "dimension": "introversion",
+      "text": "Long stretches of solitude restore you rather than drain you.",
       "reverse": false,
       "id": "classic-jungian-type-test-8"
     },
     {
-      "dimension": "thinking",
-      "text": "You prefer decisions that follow a clear logic.",
+      "dimension": "sensation",
+      "text": "You trust what you can see, touch, and verify over promising theories.",
       "reverse": false,
       "id": "classic-jungian-type-test-9"
     },
     {
-      "dimension": "thinking",
-      "text": "Inconsistency bothers you quickly.",
+      "dimension": "sensation",
+      "text": "You notice the concrete details of a place — light, sound, texture — before its atmosphere.",
       "reverse": false,
       "id": "classic-jungian-type-test-10"
     },
     {
-      "dimension": "feeling",
-      "text": "You track how choices affect people and values.",
+      "dimension": "sensation",
+      "text": "Hands-on experience teaches you more than abstract discussion.",
       "reverse": false,
       "id": "classic-jungian-type-test-11"
     },
     {
-      "dimension": "feeling",
-      "text": "A decision should feel humane as well as correct.",
+      "dimension": "sensation",
+      "text": "When someone describes a plan, you immediately picture its practical specifics.",
       "reverse": false,
       "id": "classic-jungian-type-test-12"
+    },
+    {
+      "dimension": "intuition",
+      "text": "You often sense where a situation is heading before you can explain why.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-13"
+    },
+    {
+      "dimension": "intuition",
+      "text": "Hidden connections between unrelated ideas jump out at you.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-14"
+    },
+    {
+      "dimension": "intuition",
+      "text": "What something could become interests you more than what it currently is.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-15"
+    },
+    {
+      "dimension": "intuition",
+      "text": "You read between the lines almost automatically.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-16"
+    },
+    {
+      "dimension": "thinking",
+      "text": "You weigh decisions by logic first, even when feelings run high.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-17"
+    },
+    {
+      "dimension": "thinking",
+      "text": "An inconsistent argument bothers you more than a blunt one.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-18"
+    },
+    {
+      "dimension": "thinking",
+      "text": "You would rather be correct than comfortable in a discussion.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-19"
+    },
+    {
+      "dimension": "thinking",
+      "text": "Clear criteria and principles make a decision feel trustworthy to you.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-20"
+    },
+    {
+      "dimension": "feeling",
+      "text": "The human impact of a decision weighs at least as much as its logic.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-21"
+    },
+    {
+      "dimension": "feeling",
+      "text": "You quickly sense when a choice would violate something you value.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-22"
+    },
+    {
+      "dimension": "feeling",
+      "text": "Harmony among people is a real outcome to you, not a soft extra.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-23"
+    },
+    {
+      "dimension": "feeling",
+      "text": "You judge ideas partly by the spirit in which they are offered.",
+      "reverse": false,
+      "id": "classic-jungian-type-test-24"
     }
   ]
 };

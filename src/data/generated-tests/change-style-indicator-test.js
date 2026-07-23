@@ -11,20 +11,28 @@ export default {
   "title": "Change Style Indicator Test",
   "category": "Career",
   "time": "6 min",
-  "intro": "Discover how you approach change: conserver, pragmatist, originator, stabilizer, or translator.",
+  "mode": "spectrum",
+  "spectrum": {
+    "negative": "conserver",
+    "middle": "pragmatist",
+    "positive": "originator"
+  },
+  "intro": "When change arrives, do you protect what works, broker what is practical, or push for reinvention? 18 questions place you on the classic change-style continuum from Conserver through Pragmatist to Originator — and show how far toward each end you lean.",
+  "notice": "Inspired by the Change Style Indicator® framework (Musselwhite & Ingram). This is an original reflection quiz, not the official assessment, and cannot be used for hiring or selection decisions.",
   "dimensions": [
     {
       "key": "conserver",
       "label": "Conserver",
       "title": "Conserver Change Style",
-      "summary": "You protect what already works and ask for evidence before changing.",
+      "summary": "You prefer gradual, tested change that keeps the current structure working. You improve systems from the inside and guard what has already earned its keep.",
       "strengths": [
-        "Continuity",
-        "Caution",
-        "Quality"
+        "Discipline and follow-through",
+        "Institutional memory",
+        "Risk control"
       ],
       "growth": [
-        "Do not make the familiar automatically right"
+        "Ask whether the familiar still earns its place",
+        "Run one small experiment before objecting"
       ],
       "color": "#6b43ef"
     },
@@ -32,14 +40,15 @@ export default {
       "key": "pragmatist",
       "label": "Pragmatist",
       "title": "Pragmatist Change Style",
-      "summary": "You want practical changes that solve real problems.",
+      "summary": "You judge change by results. Standing in the middle of the continuum, you mediate between defenders and disruptors and back whichever approach solves the real problem.",
       "strengths": [
-        "Practicality",
-        "Balance",
-        "Usefulness"
+        "Outcome focus",
+        "Mediating between camps",
+        "Situational flexibility"
       ],
       "growth": [
-        "Think beyond immediate fixes"
+        "Take a stand earlier instead of always brokering",
+        "Look past the immediate fix to the longer game"
       ],
       "color": "#2f74ef"
     },
@@ -47,108 +56,127 @@ export default {
       "key": "originator",
       "label": "Originator",
       "title": "Originator Change Style",
-      "summary": "You imagine bold alternatives and are energized by reinvention.",
+      "summary": "You challenge the current structure and prefer fast, expansive change. Rules read as suggestions, and uncertainty reads as opportunity.",
       "strengths": [
-        "Vision",
-        "Innovation",
-        "Courage"
+        "Vision and reinvention",
+        "Comfort with risk",
+        "Challenging assumptions"
       ],
       "growth": [
-        "Bring others along sooner"
+        "Bring people along before the leap",
+        "Finish one revolution before starting the next"
       ],
       "color": "#18a88a"
-    },
-    {
-      "key": "stabilizer",
-      "label": "Stabilizer",
-      "title": "Stabilizer Change Style",
-      "summary": "You help people stay steady while systems shift.",
-      "strengths": [
-        "Calm",
-        "Support",
-        "Continuity"
-      ],
-      "growth": [
-        "Name urgency when needed"
-      ],
-      "color": "#f08a24"
-    },
-    {
-      "key": "translator",
-      "label": "Translator",
-      "title": "Change Translator",
-      "summary": "You turn abstract change into language and steps people can use.",
-      "strengths": [
-        "Communication",
-        "Clarity",
-        "Empathy"
-      ],
-      "growth": [
-        "Do not own everyone’s adaptation"
-      ],
-      "color": "#e84b72"
     }
   ],
   "questions": [
     {
       "dimension": "conserver",
-      "text": "You want proof before replacing a working system.",
+      "text": "You want solid evidence before replacing a system that still works.",
       "reverse": false,
       "id": "change-style-indicator-test-1"
     },
     {
       "dimension": "conserver",
-      "text": "Continuity has real value to you.",
+      "text": "When plans change suddenly, your first instinct is to protect what is already running well.",
       "reverse": false,
       "id": "change-style-indicator-test-2"
     },
     {
-      "dimension": "pragmatist",
-      "text": "You support change when it solves a clear problem.",
+      "dimension": "conserver",
+      "text": "You prefer improving an existing process over inventing a new one.",
       "reverse": false,
       "id": "change-style-indicator-test-3"
     },
     {
-      "dimension": "pragmatist",
-      "text": "Useful beats flashy in your view.",
+      "dimension": "conserver",
+      "text": "Detailed, step-by-step transition plans reassure you.",
       "reverse": false,
       "id": "change-style-indicator-test-4"
     },
     {
-      "dimension": "originator",
-      "text": "You can imagine a much better version of the current system.",
-      "reverse": false,
+      "dimension": "conserver",
+      "text": "Following the same proven routine for months makes you feel stale.",
+      "reverse": true,
       "id": "change-style-indicator-test-5"
     },
     {
-      "dimension": "originator",
-      "text": "Reinvention energizes you.",
-      "reverse": false,
+      "dimension": "conserver",
+      "text": "You happily drop an established method the moment something more exciting appears.",
+      "reverse": true,
       "id": "change-style-indicator-test-6"
     },
     {
-      "dimension": "stabilizer",
-      "text": "You help people stay grounded during change.",
+      "dimension": "pragmatist",
+      "text": "You back whichever side of a change debate has the most workable plan.",
       "reverse": false,
       "id": "change-style-indicator-test-7"
     },
     {
-      "dimension": "stabilizer",
-      "text": "Stability matters while things shift.",
+      "dimension": "pragmatist",
+      "text": "In disagreements about change, you often end up translating between the cautious and the bold.",
       "reverse": false,
       "id": "change-style-indicator-test-8"
     },
     {
-      "dimension": "translator",
-      "text": "You explain change in ways people can act on.",
+      "dimension": "pragmatist",
+      "text": "You judge a new idea mainly by the practical problem it solves.",
       "reverse": false,
       "id": "change-style-indicator-test-9"
     },
     {
-      "dimension": "translator",
-      "text": "You notice where people need clarity.",
+      "dimension": "pragmatist",
+      "text": "You can defend the old way and the new way in the same meeting, if each fits its situation.",
       "reverse": false,
       "id": "change-style-indicator-test-10"
+    },
+    {
+      "dimension": "pragmatist",
+      "text": "Once you pick a side on a change, you rarely adjust your position, whatever the results.",
+      "reverse": true,
+      "id": "change-style-indicator-test-11"
+    },
+    {
+      "dimension": "pragmatist",
+      "text": "Compromising on timing or scope feels like progress to you, not defeat.",
+      "reverse": false,
+      "id": "change-style-indicator-test-12"
+    },
+    {
+      "dimension": "originator",
+      "text": "You can imagine a radically better version of almost any system you use.",
+      "reverse": false,
+      "id": "change-style-indicator-test-13"
+    },
+    {
+      "dimension": "originator",
+      "text": "Starting from a blank page energizes you more than refining what exists.",
+      "reverse": false,
+      "id": "change-style-indicator-test-14"
+    },
+    {
+      "dimension": "originator",
+      "text": "Rules feel more like starting points for negotiation than fixed limits.",
+      "reverse": false,
+      "id": "change-style-indicator-test-15"
+    },
+    {
+      "dimension": "originator",
+      "text": "You often push for bigger change than the people around you are ready for.",
+      "reverse": false,
+      "id": "change-style-indicator-test-16"
+    },
+    {
+      "dimension": "originator",
+      "text": "Uncertainty about how things will turn out drains you more than it excites you.",
+      "reverse": true,
+      "id": "change-style-indicator-test-17"
+    },
+    {
+      "dimension": "originator",
+      "text": "You would rather risk a failed experiment than miss a possible breakthrough.",
+      "reverse": false,
+      "id": "change-style-indicator-test-18"
     }
   ]
 };

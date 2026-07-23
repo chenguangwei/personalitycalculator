@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowDownToLine,
@@ -63,6 +63,25 @@ const QUIZ_COPY = {
         ? `Your primary strength is ${primary.groupLabel}. Under pressure you tend to shift toward ${backup.groupLabel}, so watch how that style behaves when it is overdone.`
         : `Your primary strength is ${primary.groupLabel}, and you stay with it under pressure — the risk is overusing it rather than switching away.`,
     overdoneTitle: (label) => `When ${label} is overdone under pressure`,
+    // Scale (banded single-score), spectrum (continuum), and Jungian (8-type)
+    // result profiles. English-only fallback works via the per-key merge.
+    scaleProfileTitle: 'Your score profile',
+    scaleLead: (total, max) => `You scored ${total} out of ${max}.`,
+    auxiliaryLabel: 'Auxiliary function',
+    spectrumProfileTitle: 'Your change-style continuum',
+    spectrumLead: (primary) => `You sit closest to the ${primary.label} end of the continuum. Most people can flex toward the other styles when the situation demands it.`,
+    jungianProfileTitle: 'Your function profile',
+    jungianLead: (dominant, auxiliary) => `Your dominant function is ${dominant.title}, supported by ${auxiliary.title}. In Jung’s model the function opposite your dominant is the least conscious one — worth watching under stress.`,
+    // Matrix (coping mode × orientation) profile — Millon-style tests.
+    matrixProfileTitle: 'Your pattern matrix',
+    matrixLead: (primary, second, rowLabel, colLabel) =>
+      `Your leading style is ${primary.title} — the ${rowLabel} × ${colLabel} cell of the matrix.${second ? ` Right behind it: ${second.title} at ${second.percent}%.` : ''}`,
+    matrixNote: 'Rows are Millon’s coping modes — how you pursue what you need. Columns are reinforcement orientations — where you seek it.',
+    // Alignment (two-axis 3×3 chart) profile.
+    alignmentProfileTitle: 'Your alignment chart',
+    alignmentLead: (primary, rowLabel, colLabel) =>
+      `You land on ${primary.label} — the ${colLabel} × ${rowLabel} cell of the classic nine-alignment chart. The axis bars show exactly where you sit; a marker near the middle means you border the neighboring alignment.`,
+    alignmentNote: 'Each axis is scored independently from your answers. The horizontal axis is how you relate to rules and structure; the vertical axis is whose interests drive your choices.',
   },
   zh: {
     progressReady: '你的结果已准备好。',
@@ -97,6 +116,21 @@ const QUIZ_COPY = {
         ? `你的主导优势是${primary.groupLabel}。压力之下，你往往会转向${backup.groupLabel}，因此要留意这种风格被过度使用时的表现。`
         : `你的主导优势是${primary.groupLabel}，在压力之下你也会继续依靠它——风险在于用力过度，而不是转向其他风格。`,
     overdoneTitle: (label) => `当${label}在压力下被过度使用`,
+    scaleProfileTitle: '你的分数画像',
+    scaleLead: (total, max) => `你的总分是 ${total}(满分 ${max})。`,
+    auxiliaryLabel: '辅助功能',
+    spectrumProfileTitle: '你的变革风格光谱',
+    spectrumLead: (primary) => `你最靠近光谱的「${primary.label}」一端。情境需要时,大多数人也能向其他风格灵活移动。`,
+    jungianProfileTitle: '你的功能画像',
+    jungianLead: (dominant, auxiliary) => `你的主导功能是${dominant.title},由${auxiliary.title}辅助。在荣格的模型中,与主导功能相对的功能最不受意识掌控,压力之下值得留意。`,
+    matrixProfileTitle: '你的模式矩阵',
+    matrixLead: (primary, second, rowLabel, colLabel) =>
+      `你的主导风格是${primary.title}——位于矩阵的「${rowLabel} × ${colLabel}」格。${second ? `紧随其后的是${second.title}(${second.percent}%)。` : ''}`,
+    matrixNote: '行是米隆的应对模式——你如何追求所需；列是强化取向——你从哪里寻求它。',
+    alignmentProfileTitle: '你的阵营九宫格',
+    alignmentLead: (primary, rowLabel, colLabel) =>
+      `你落在${primary.label}——经典九宫格阵营图中「${colLabel} × ${rowLabel}」的位置。轴上的标记显示你的确切位置；标记靠近中间，说明你与相邻阵营只有一步之遥。`,
+    alignmentNote: '两条轴根据你的作答独立计分：横轴是你与规则和秩序的关系，纵轴是你的选择更多为谁的利益服务。',
   },
   ja: {
     progressReady: '結果の準備ができました。',
@@ -131,6 +165,21 @@ const QUIZ_COPY = {
         ? `あなたの主要な強みは${primary.groupLabel}です。プレッシャー下では${backup.groupLabel}に傾きやすいので、そのスタイルが過剰になったときの振る舞いに注意しましょう。`
         : `あなたの主要な強みは${primary.groupLabel}で、プレッシャー下でもそれを保ちます。リスクは切り替えることではなく、使いすぎることです。`,
     overdoneTitle: (label) => `${label}がプレッシャー下で過剰になると`,
+    scaleProfileTitle: 'スコアプロフィール',
+    scaleLead: (total, max) => `あなたの合計スコアは ${total}(満点 ${max})です。`,
+    auxiliaryLabel: '補助機能',
+    spectrumProfileTitle: '変化スタイルの連続体',
+    spectrumLead: (primary) => `あなたは連続体の「${primary.label}」側に最も近い位置にいます。状況に応じて、他のスタイルへ柔軟に動くこともできます。`,
+    jungianProfileTitle: '機能プロフィール',
+    jungianLead: (dominant, auxiliary) => `あなたの主機能は${dominant.title}で、${auxiliary.title}が補助します。ユングのモデルでは主機能と対極の機能が最も無意識的とされ、ストレス下では注意が必要です。`,
+    matrixProfileTitle: 'あなたのパターン・マトリクス',
+    matrixLead: (primary, second, rowLabel, colLabel) =>
+      `あなたの主導スタイルは${primary.title}——マトリクスの「${rowLabel} × ${colLabel}」のセルです。${second ? `すぐ後ろに${second.title}(${second.percent}%)が続きます。` : ''}`,
+    matrixNote: '行はミロンの対処モード——必要なものをどう追い求めるか。列は強化の方向——それをどこに求めるか。',
+    alignmentProfileTitle: 'あなたのアライメント・チャート',
+    alignmentLead: (primary, rowLabel, colLabel) =>
+      `あなたは${primary.label}——クラシックな9アライメント表の「${colLabel} × ${rowLabel}」のセルに位置します。軸上のマーカーが正確な位置を示します。マーカーが中央に近いほど、隣のアライメントとの境界線上にいます。`,
+    alignmentNote: '2つの軸は回答から独立して採点されます。横軸はルールや秩序との関わり方、縦軸は選択が誰の利益のためかを表します。',
   },
   ko: {
     progressReady: '결과가 준비되었습니다.',
@@ -165,6 +214,21 @@ const QUIZ_COPY = {
         ? `당신의 주도 강점은 ${primary.groupLabel}입니다. 압박을 받으면 ${backup.groupLabel} 쪽으로 기우는 경향이 있으니, 그 스타일이 과하게 쓰일 때의 모습을 살펴보세요.`
         : `당신의 주도 강점은 ${primary.groupLabel}이며, 압박 속에서도 그대로 유지합니다. 위험은 다른 스타일로 바꾸는 것이 아니라 과도하게 쓰는 것입니다.`,
     overdoneTitle: (label) => `${label}이 압박 속에서 과하게 쓰일 때`,
+    scaleProfileTitle: '나의 점수 프로필',
+    scaleLead: (total, max) => `총점은 ${total}점(만점 ${max}점)입니다.`,
+    auxiliaryLabel: '보조 기능',
+    spectrumProfileTitle: '나의 변화 스타일 연속선',
+    spectrumLead: (primary) => `당신은 연속선에서 「${primary.label}」 쪽에 가장 가깝습니다. 상황이 요구하면 다른 스타일로도 유연하게 움직일 수 있습니다.`,
+    jungianProfileTitle: '나의 기능 프로필',
+    jungianLead: (dominant, auxiliary) => `주기능은 ${dominant.title}이며 ${auxiliary.title}이 보조합니다. 융의 모델에서 주기능의 반대 기능은 가장 무의식적이어서 스트레스 상황에서 살펴볼 가치가 있습니다.`,
+    matrixProfileTitle: '나의 패턴 매트릭스',
+    matrixLead: (primary, second, rowLabel, colLabel) =>
+      `당신의 주도 스타일은 ${primary.title} — 매트릭스의 「${rowLabel} × ${colLabel}」 칸입니다.${second ? ` 바로 뒤는 ${second.title}(${second.percent}%)입니다.` : ''}`,
+    matrixNote: '행은 밀론의 대처 방식 — 필요한 것을 어떻게 추구하는가. 열은 강화 지향 — 그것을 어디에서 구하는가.',
+    alignmentProfileTitle: '나의 성향 차트',
+    alignmentLead: (primary, rowLabel, colLabel) =>
+      `당신은 ${primary.label} — 클래식 9성향 차트의 「${colLabel} × ${rowLabel}」 칸에 위치합니다. 축 위의 마커가 정확한 위치를 보여줍니다. 마커가 가운데에 가까울수록 이웃 성향과의 경계에 있다는 뜻입니다.`,
+    alignmentNote: '두 축은 응답에서 각각 독립적으로 계산됩니다. 가로축은 규칙과 질서를 대하는 방식, 세로축은 선택이 누구의 이익을 향하는지를 나타냅니다.',
   },
 };
 
@@ -343,18 +407,140 @@ export function calculateResult(test, answers) {
 
   // Tests whose dimensions carry a `group` (e.g. LIFO's 4 styles measured under
   // favorable/stress) are aggregated into a grouped style profile instead of a
-  // flat winner. Every other test keeps the normal single-winner path.
+  // flat winner. `scale` tests sum every item into one banded total, and
+  // `jungian` tests map three bipolar axes onto one of Jung's eight types.
+  // Every other test keeps the normal single-winner path.
   if (test.dimensions[0]?.group) {
     return buildGroupedResult(test, dimensions);
+  }
+  if (test.mode === 'scale') {
+    return buildScaleResult(test, dimensions);
+  }
+  if (test.mode === 'jungian') {
+    return buildJungianResult(test, dimensions);
+  }
+  if (test.mode === 'alignment') {
+    return buildAlignmentResult(test, dimensions);
   }
 
   const primary = dimensions[0];
   const secondary = dimensions.find((dimension) => dimension.key !== primary.key && primary.percent - dimension.percent <= 6);
 
-  return {
+  const result = {
     primary,
     secondary,
     dimensions,
+  };
+
+  // Matrix tests (e.g. Millon's coping mode × orientation grid) additionally
+  // place every pattern in a labelled cell; the profile renders the full grid.
+  if (test.mode === 'matrix' && test.matrix) {
+    result.matrix = test.matrix;
+  }
+
+  // Spectrum tests (e.g. Change Style Indicator) additionally place the person
+  // on a continuum between the negative and positive pole styles.
+  if (test.mode === 'spectrum' && test.spectrum) {
+    const byKey = Object.fromEntries(dimensions.map((dimension) => [dimension.key, dimension]));
+    const negative = byKey[test.spectrum.negative];
+    const positive = byKey[test.spectrum.positive];
+    const middle = byKey[test.spectrum.middle];
+    const position = (positive?.percent || 0) - (negative?.percent || 0);
+    result.spectrum = { negative, middle, positive, position };
+  }
+
+  return result;
+}
+
+function buildScaleResult(test, dimensions) {
+  const { dimension: totalKey, min, max } = test.scale;
+  const scored = dimensions.find((dimension) => dimension.key === totalKey);
+  const total = Math.min(max, Math.max(min, scored?.score || 0));
+  const percent = Math.max(0, Math.round(((total - min) / (max - min)) * 100));
+  const bands = test.dimensions.filter((dimension) => Array.isArray(dimension.band));
+  const activeBand = bands.find((band) => total >= band.band[0] && total <= band.band[1]) || bands[0];
+
+  return {
+    primary: { ...activeBand, percent },
+    secondary: undefined,
+    dimensions,
+    scale: {
+      total,
+      min,
+      max,
+      percent,
+      bands: bands.map((band) => ({ ...band, active: band.key === activeBand.key })),
+    },
+  };
+}
+
+function buildJungianResult(test, dimensions) {
+  const scoredByKey = Object.fromEntries(dimensions.map((dimension) => [dimension.key, dimension]));
+  const axes = test.axes.map((axis) => ({
+    key: axis.key,
+    left: scoredByKey[axis.left],
+    right: scoredByKey[axis.right],
+  }));
+
+  const attitudeAxis = axes.find((axis) => axis.key === 'attitude');
+  const attitude = (attitudeAxis.left?.percent || 0) >= (attitudeAxis.right?.percent || 0)
+    ? attitudeAxis.left
+    : attitudeAxis.right;
+
+  const functionPoles = axes
+    .filter((axis) => axis.key !== 'attitude')
+    .flatMap((axis) => [axis.left, axis.right])
+    .filter(Boolean)
+    .sort((a, b) => b.percent - a.percent || b.score - a.score);
+  const dominant = functionPoles[0];
+  const auxiliary = functionPoles.find((pole) => pole.axis !== dominant.axis);
+
+  const typeEntry = test.dimensions.find(
+    (dimension) => dimension.role === 'type' && dimension.attitude === attitude.key && dimension.fn === dominant.key,
+  );
+
+  return {
+    primary: { ...typeEntry, percent: dominant.percent, color: typeEntry?.color || dominant.color },
+    secondary: auxiliary ? { ...auxiliary } : undefined,
+    dimensions,
+    jungian: { axes, attitude, dominant, auxiliary },
+  };
+}
+
+// Width of the neutral band on an alignment axis: the axis lands Neutral when
+// its two pole percentages sit within this many points of each other.
+const ALIGNMENT_NEUTRAL_BAND = 12;
+
+function buildAlignmentResult(test, dimensions) {
+  const scoredByKey = Object.fromEntries(dimensions.map((dimension) => [dimension.key, dimension]));
+  // axes[0] picks the matrix column, axes[1] the row. band: 0 = left pole,
+  // 1 = neutral middle, 2 = right pole.
+  const axes = test.axes.map((axis) => {
+    const left = scoredByKey[axis.left];
+    const right = scoredByKey[axis.right];
+    const position = (left?.percent || 0) - (right?.percent || 0);
+    const band = position >= ALIGNMENT_NEUTRAL_BAND ? 0 : position <= -ALIGNMENT_NEUTRAL_BAND ? 2 : 1;
+    return { key: axis.key, left, right, position, band };
+  });
+  const col = test.matrix.cols[axes[0].band];
+  const row = test.matrix.rows[axes[1].band];
+  const typeEntry = test.dimensions.find(
+    (dimension) => dimension.role === 'type' && dimension.row === row && dimension.col === col,
+  );
+  // Match strength: winning-pole percent per decided axis, closeness to
+  // balance per neutral axis, averaged across both axes.
+  const strength = Math.round(
+    axes.reduce((sum, axis) => {
+      if (axis.band === 1) return sum + (100 - Math.abs(axis.position));
+      return sum + Math.max(axis.left?.percent || 0, axis.right?.percent || 0);
+    }, 0) / axes.length,
+  );
+
+  return {
+    primary: { ...typeEntry, percent: strength },
+    secondary: undefined,
+    dimensions,
+    alignment: { axes, row, col, matrix: test.matrix },
   };
 }
 
@@ -877,6 +1063,16 @@ export function GenericTestPage({ slug }) {
           </div>
           {result.grouped ? (
             <LifoProfile result={result} copy={copy} />
+          ) : result.alignment ? (
+            <AlignmentProfile result={result} copy={copy} />
+          ) : result.matrix ? (
+            <MatrixProfile result={result} copy={copy} />
+          ) : result.scale ? (
+            <ScaleProfile result={result} copy={copy} />
+          ) : result.jungian ? (
+            <JungianProfile result={result} copy={copy} />
+          ) : result.spectrum ? (
+            <SpectrumProfile result={result} copy={copy} />
           ) : (
             <div className="quiz-score-card">
               <h3>{copy.scoreBreakdown}</h3>
@@ -973,7 +1169,11 @@ function ResultCardContent({ result, localizedTest, copy, titleId }) {
         <strong>{percent}%</strong>
       </div>
       <h2 id={titleId}>{result.primary.title}</h2>
-      {result.secondary && <h3>{result.grouped ? copy.stressLabel : copy.secondaryPattern}: {result.secondary.title}</h3>}
+      {result.secondary && (
+        <h3>
+          {result.grouped ? copy.stressLabel : result.jungian ? copy.auxiliaryLabel : copy.secondaryPattern}: {result.secondary.title}
+        </h3>
+      )}
       <p>{result.primary.summary}</p>
       <div className="quiz-result-theme-bar">
         <i style={{ width: `${result.primary.percent}%` }} />
@@ -1038,6 +1238,216 @@ function LifoProfile({ result, copy }) {
           </ul>
         </div>
       )}
+    </div>
+  );
+}
+
+function AlignmentProfile({ result, copy }) {
+  const { axes, matrix } = result.alignment;
+  const byCell = {};
+  result.dimensions.forEach((dimension) => {
+    if (dimension.role === 'type' && dimension.row && dimension.col) {
+      byCell[`${dimension.row}:${dimension.col}`] = dimension;
+    }
+  });
+  const primary = result.primary;
+  return (
+    <div className="quiz-score-card quiz-alignment-profile">
+      <h3>{copy.alignmentProfileTitle}</h3>
+      <p className="quiz-lifo-lead">
+        {copy.alignmentLead(primary, matrix.labels[result.alignment.row], matrix.labels[result.alignment.col])}
+      </p>
+      <div className="quiz-alignment-axes">
+        {axes.map((axis) => {
+          // position ranges -100..100 (left pole..right pole); map to 0..100%.
+          const marker = Math.min(100, Math.max(0, 50 - axis.position / 2));
+          return (
+            <div className="quiz-alignment-axis" key={axis.key}>
+              <span className="quiz-alignment-pole">
+                <strong>{axis.left.label}</strong>
+                <em>{axis.left.percent}%</em>
+              </span>
+              <div className="quiz-alignment-track" style={{ '--axis-left': axis.left.color, '--axis-right': axis.right.color }}>
+                <i style={{ left: `${marker}%` }} />
+              </div>
+              <span className="quiz-alignment-pole is-right">
+                <strong>{axis.right.label}</strong>
+                <em>{axis.right.percent}%</em>
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="quiz-matrix-scroll">
+        <div className="quiz-matrix-grid quiz-alignment-grid" style={{ '--matrix-cols': matrix.cols.length }}>
+          <span className="quiz-matrix-corner" aria-hidden="true" />
+          {matrix.cols.map((col) => (
+            <span className="quiz-matrix-axis-label" key={col}>{matrix.labels[col]}</span>
+          ))}
+          {matrix.rows.map((row) => (
+            <Fragment key={row}>
+              <span className="quiz-matrix-axis-label is-row">{matrix.labels[row]}</span>
+              {matrix.cols.map((col) => {
+                const cell = byCell[`${row}:${col}`];
+                if (!cell) return <span key={col} className="quiz-matrix-cell is-empty" />;
+                const isPrimary = cell.key === primary.key;
+                return (
+                  <div
+                    className={`quiz-matrix-cell${isPrimary ? ' is-primary' : ''}`}
+                    key={col}
+                    style={isPrimary ? { borderColor: cell.color } : undefined}
+                  >
+                    <strong>{cell.label}</strong>
+                  </div>
+                );
+              })}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+      <p className="quiz-matrix-note">{copy.alignmentNote}</p>
+    </div>
+  );
+}
+
+function MatrixProfile({ result, copy }) {
+  const { matrix } = result;
+  const byCell = {};
+  result.dimensions.forEach((dimension) => {
+    if (dimension.row && dimension.col) byCell[`${dimension.row}:${dimension.col}`] = dimension;
+  });
+  const primary = result.primary;
+  // result.dimensions is sorted by percent desc, so index 1 is the runner-up.
+  const second = result.dimensions.find((dimension) => dimension.key !== primary.key);
+  return (
+    <div className="quiz-score-card quiz-matrix-profile">
+      <h3>{copy.matrixProfileTitle}</h3>
+      <p className="quiz-lifo-lead">{copy.matrixLead(primary, second, matrix.labels[primary.row], matrix.labels[primary.col])}</p>
+      <div className="quiz-matrix-scroll">
+        <div className="quiz-matrix-grid" style={{ '--matrix-cols': matrix.cols.length }}>
+          <span className="quiz-matrix-corner" aria-hidden="true" />
+          {matrix.cols.map((col) => (
+            <span className="quiz-matrix-axis-label" key={col}>{matrix.labels[col]}</span>
+          ))}
+          {matrix.rows.map((row) => (
+            <Fragment key={row}>
+              <span className="quiz-matrix-axis-label is-row">{matrix.labels[row]}</span>
+              {matrix.cols.map((col) => {
+                const cell = byCell[`${row}:${col}`];
+                if (!cell) return <span key={col} className="quiz-matrix-cell is-empty" />;
+                const isPrimary = cell.key === primary.key;
+                return (
+                  <div
+                    className={`quiz-matrix-cell${isPrimary ? ' is-primary' : ''}`}
+                    key={col}
+                    style={isPrimary ? { borderColor: cell.color } : undefined}
+                  >
+                    <strong>{cell.label}</strong>
+                    <span>{cell.percent}%</span>
+                    <i>
+                      <b style={{ width: `${cell.percent}%`, background: cell.color }} />
+                    </i>
+                  </div>
+                );
+              })}
+            </Fragment>
+          ))}
+        </div>
+      </div>
+      <p className="quiz-matrix-note">{copy.matrixNote}</p>
+    </div>
+  );
+}
+
+function ScaleProfile({ result, copy }) {
+  const { total, max, percent, bands } = result.scale;
+  const markerLeft = Math.min(96, Math.max(4, percent));
+  return (
+    <div className="quiz-score-card quiz-scale-profile">
+      <h3>{copy.scaleProfileTitle}</h3>
+      <p className="quiz-lifo-lead">{copy.scaleLead(total, max)}</p>
+      <div className="quiz-scale-track">
+        <i>
+          <b style={{ width: `${percent}%`, background: result.primary.color }} />
+        </i>
+        <span className="quiz-scale-marker" style={{ left: `${markerLeft}%` }}>{total}</span>
+      </div>
+      <div className="quiz-scale-bands">
+        {bands.map((band) => (
+          <div
+            className={`quiz-scale-band${band.active ? ' is-active' : ''}`}
+            key={band.key}
+            style={band.active ? { borderColor: band.color } : undefined}
+          >
+            <strong>{band.title}</strong>
+            <span>{band.band[0]}–{band.band[1]}</span>
+            <p>{band.summary}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SpectrumProfile({ result, copy }) {
+  const { negative, middle, positive, position } = result.spectrum;
+  const markerLeft = Math.min(96, Math.max(4, Math.round((position + 100) / 2)));
+  const styles = [negative, middle, positive].filter(Boolean);
+  return (
+    <div className="quiz-score-card quiz-spectrum-profile">
+      <h3>{copy.spectrumProfileTitle}</h3>
+      <p className="quiz-lifo-lead">{copy.spectrumLead(result.primary)}</p>
+      <div className="quiz-spectrum-track" style={{ '--spectrum-start': negative?.color, '--spectrum-mid': middle?.color, '--spectrum-end': positive?.color }}>
+        <span className="quiz-spectrum-marker" style={{ left: `${markerLeft}%`, borderColor: result.primary.color }} />
+      </div>
+      <div className="quiz-spectrum-ends">
+        {styles.map((style) => (
+          <span key={style.key}>{style.label}</span>
+        ))}
+      </div>
+      <div className="quiz-spectrum-rows">
+        {styles.map((style) => (
+          <div className="quiz-score-row" key={style.key}>
+            <div>
+              <strong>{style.label}</strong>
+              <span>{style.percent}%</span>
+            </div>
+            <i>
+              <b style={{ width: `${style.percent}%`, background: style.color }} />
+            </i>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function JungianProfile({ result, copy }) {
+  const { axes, dominant, auxiliary } = result.jungian;
+  return (
+    <div className="quiz-score-card quiz-jungian-profile">
+      <h3>{copy.jungianProfileTitle}</h3>
+      <p className="quiz-lifo-lead">{copy.jungianLead(dominant, auxiliary)}</p>
+      <div className="quiz-axis-rows">
+        {axes.map((axis) => {
+          const leftPercent = axis.left?.percent || 0;
+          const rightPercent = axis.right?.percent || 0;
+          const total = leftPercent + rightPercent;
+          const leftShare = total ? Math.round((leftPercent / total) * 100) : 50;
+          return (
+            <div className="quiz-axis-row" key={axis.key}>
+              <div className="quiz-axis-labels">
+                <strong className={leftPercent >= rightPercent ? 'is-lead' : ''}>{axis.left.label} · {leftPercent}%</strong>
+                <strong className={rightPercent > leftPercent ? 'is-lead' : ''}>{rightPercent}% · {axis.right.label}</strong>
+              </div>
+              <div className="quiz-axis-bar">
+                <b className={leftPercent >= rightPercent ? 'is-lead' : ''} style={{ width: `${leftShare}%`, background: axis.left.color }} />
+                <b className={rightPercent > leftPercent ? 'is-lead' : ''} style={{ width: `${100 - leftShare}%`, background: axis.right.color }} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

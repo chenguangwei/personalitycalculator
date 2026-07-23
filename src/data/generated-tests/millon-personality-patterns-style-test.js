@@ -10,173 +10,320 @@ export default {
   "slug": "millon-personality-patterns-style-test",
   "title": "Millon Personality Patterns Style Test",
   "category": "Popular",
-  "time": "6 min",
-  "intro": "Explore broad personality pattern signals such as detached, dependent, dramatic, compulsive, negativistic, and avoidant tendencies.",
-  "notice": "This is an educational Millon-inspired style quiz, not the official MCMI and not a clinical diagnosis.",
+  "time": "7 min",
+  "intro": "Which of the eight classic Millon patterns leads for you? 24 statements place you on the active–passive × detached–dependent–independent–ambivalent matrix and reveal your style — from the Solitary to the Adventurer.",
+  "notice": "Inspired by Theodore Millon's biosocial-learning matrix (two coping modes × four reinforcement orientations), with normal-range style names in the tradition of Oldham's personality-styles work. This is an educational style quiz — not the official MCMI or MIPS, and not a clinical diagnosis.",
+  "mode": "matrix",
+  "matrix": {
+    "rows": [
+      "passive",
+      "active"
+    ],
+    "cols": [
+      "detached",
+      "dependent",
+      "independent",
+      "ambivalent"
+    ],
+    "labels": {
+      "passive": "Passive",
+      "active": "Active",
+      "detached": "Detached",
+      "dependent": "Dependent",
+      "independent": "Independent",
+      "ambivalent": "Ambivalent"
+    }
+  },
   "dimensions": [
     {
-      "key": "detached",
-      "label": "Detached",
-      "title": "Detached Pattern",
-      "summary": "You may protect yourself through emotional distance, independence, or low expressed need.",
+      "key": "solitary",
+      "label": "Solitary",
+      "title": "The Solitary",
+      "row": "passive",
+      "col": "detached",
+      "color": "#64748b",
+      "summary": "You are self-contained: solitude restores you, you need little outside approval, and you keep your inner world private.",
       "strengths": [
-        "Independence",
-        "Observation",
-        "Self-containment"
+        "Self-sufficiency",
+        "Calm objectivity",
+        "Comfort with solitude"
       ],
       "growth": [
-        "Let safe people know more of you"
-      ],
-      "color": "#6b43ef"
+        "Let one or two safe people actually know you",
+        "Say what you need instead of needing nothing"
+      ]
     },
     {
-      "key": "dependent",
-      "label": "Dependent",
-      "title": "Dependent Pattern",
-      "summary": "You may seek reassurance, guidance, or closeness when decisions feel risky.",
+      "key": "sensitive",
+      "label": "Sensitive",
+      "title": "The Sensitive",
+      "row": "active",
+      "col": "detached",
+      "color": "#8a5cf6",
+      "summary": "You want real connection but scan hard for rejection first — with trusted people, your warmth and depth come through.",
       "strengths": [
-        "Trust",
-        "Cooperation",
-        "Sensitivity"
+        "Deep empathy",
+        "Careful observation",
+        "Loyalty once trust is earned"
       ],
       "growth": [
-        "Build confidence in your own choices"
+        "Take one small social risk before you feel fully ready",
+        "Treat criticism as information, not a verdict"
+      ]
+    },
+    {
+      "key": "devoted",
+      "label": "Devoted",
+      "title": "The Devoted",
+      "row": "passive",
+      "col": "dependent",
+      "color": "#2f74ef",
+      "summary": "You build strong bonds and keep them: you consult people you trust, honor commitments, and make teams feel safe.",
+      "strengths": [
+        "Loyalty",
+        "Cooperation",
+        "Care for harmony"
       ],
-      "color": "#2f74ef"
+      "growth": [
+        "Make one meaningful decision alone this week",
+        "State your preference before asking everyone else's"
+      ]
     },
     {
       "key": "dramatic",
       "label": "Dramatic",
-      "title": "Dramatic Pattern",
-      "summary": "You may express feelings vividly and draw energy from attention or relational intensity.",
+      "title": "The Dramatic",
+      "row": "active",
+      "col": "dependent",
+      "color": "#e84b72",
+      "summary": "You bring color: feelings show, rooms notice you, and your energy pulls people together.",
       "strengths": [
-        "Expression",
-        "Presence",
-        "Emotional color"
+        "Expressiveness",
+        "Social magnetism",
+        "Emotional generosity"
       ],
       "growth": [
-        "Make sure intensity serves connection"
-      ],
-      "color": "#18a88a"
+        "Let quiet moments count as connection too",
+        "Check that intensity serves the relationship"
+      ]
     },
     {
-      "key": "compulsive",
-      "label": "Compulsive",
-      "title": "Compulsive Pattern",
-      "summary": "You may rely on control, rules, order, and high standards to feel secure.",
+      "key": "confident",
+      "label": "Self-Confident",
+      "title": "The Self-Confident",
+      "row": "passive",
+      "col": "independent",
+      "color": "#f08a24",
+      "summary": "You back yourself: you expect to succeed, aim high, and take leadership as natural territory.",
       "strengths": [
-        "Discipline",
+        "Ambition",
+        "Composure under evaluation",
+        "Belief in your own ideas"
+      ],
+      "growth": [
+        "Share credit visibly",
+        "Invite feedback that could sting"
+      ]
+    },
+    {
+      "key": "adventurous",
+      "label": "Adventurous",
+      "title": "The Adventurer",
+      "row": "active",
+      "col": "independent",
+      "color": "#18a88a",
+      "summary": "You move first and negotiate later: risk sharpens you, rules are tools rather than walls, and independence is non-negotiable.",
+      "strengths": [
+        "Courage",
+        "Decisiveness",
+        "Grace under pressure"
+      ],
+      "growth": [
+        "Price the downside before you leap",
+        "Keep promises even when they get boring"
+      ]
+    },
+    {
+      "key": "conscientious",
+      "label": "Conscientious",
+      "title": "The Conscientious",
+      "row": "passive",
+      "col": "ambivalent",
+      "color": "#6b43ef",
+      "summary": "You run on standards: careful work, kept commitments, and order that other people quietly rely on.",
+      "strengths": [
+        "Reliability",
         "Precision",
-        "Reliability"
+        "Strong work ethic"
       ],
       "growth": [
-        "Allow good enough when perfection costs too much"
-      ],
-      "color": "#f08a24"
+        "Ship at good-enough when perfect costs too much",
+        "Protect rest as seriously as deadlines"
+      ]
     },
     {
-      "key": "negativistic",
-      "label": "Negativistic",
-      "title": "Negativistic Pattern",
-      "summary": "You may resist demands indirectly when autonomy feels threatened.",
+      "key": "leisurely",
+      "label": "Leisurely",
+      "title": "The Leisurely",
+      "row": "active",
+      "col": "ambivalent",
+      "color": "#0ea5e9",
+      "summary": "You guard your own rhythm: you meet obligations on your terms and quietly resist anyone who pushes.",
       "strengths": [
-        "Autonomy",
-        "Discernment",
-        "Self-protection"
+        "Healthy boundaries",
+        "Inner independence",
+        "Resistance to pressure"
       ],
       "growth": [
-        "Name resistance directly and constructively"
-      ],
-      "color": "#e84b72"
-    },
-    {
-      "key": "avoidant",
-      "label": "Avoidant",
-      "title": "Avoidant Pattern",
-      "summary": "You may want connection while fearing rejection, criticism, or exposure.",
-      "strengths": [
-        "Caution",
-        "Depth",
-        "Sensitivity"
-      ],
-      "growth": [
-        "Take small safe social risks"
-      ],
-      "color": "#8a5cf6"
+        "Say the no out loud instead of slowing down silently",
+        "Choose where to invest full effort — then give it"
+      ]
     }
   ],
   "questions": [
     {
-      "dimension": "detached",
-      "text": "You often handle feelings privately rather than showing need.",
+      "dimension": "solitary",
+      "text": "Time alone genuinely restores you — you rarely feel lonely in it.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-1"
     },
     {
-      "dimension": "detached",
-      "text": "Distance can feel safer than relying on people.",
+      "dimension": "sensitive",
+      "text": "You want closeness, but the risk of being judged often holds you back.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-2"
     },
     {
-      "dimension": "dependent",
-      "text": "You seek reassurance when choices feel uncertain.",
+      "dimension": "devoted",
+      "text": "Before a big decision, you want to hear what someone you trust would do.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-3"
     },
     {
-      "dimension": "dependent",
-      "text": "Support from trusted people helps you act.",
+      "dimension": "dramatic",
+      "text": "When you enter a room, you tend to draw attention — and you enjoy it.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-4"
     },
     {
-      "dimension": "dramatic",
-      "text": "You express feelings with visible intensity.",
+      "dimension": "confident",
+      "text": "You believe you have qualities that genuinely set you apart.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-5"
     },
     {
-      "dimension": "dramatic",
-      "text": "Being emotionally seen matters to you.",
+      "dimension": "adventurous",
+      "text": "You would rather ask forgiveness than permission.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-6"
     },
     {
-      "dimension": "compulsive",
-      "text": "Rules and structure help you feel secure.",
+      "dimension": "conscientious",
+      "text": "You hold yourself to standards most people would call strict.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-7"
     },
     {
-      "dimension": "compulsive",
-      "text": "You notice mistakes quickly and want them corrected.",
+      "dimension": "leisurely",
+      "text": "When someone pressures you to hurry, something in you slows down.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-8"
     },
     {
-      "dimension": "negativistic",
-      "text": "You resist when expectations feel controlling.",
+      "dimension": "solitary",
+      "text": "You can go a long stretch without social contact and not miss it.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-9"
     },
     {
-      "dimension": "negativistic",
-      "text": "You may delay or push back if autonomy feels ignored.",
+      "dimension": "sensitive",
+      "text": "After social events, you replay moments and check how you came across.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-10"
     },
     {
-      "dimension": "avoidant",
-      "text": "You can want closeness and still fear being judged.",
+      "dimension": "devoted",
+      "text": "You feel steadier acting as part of a strong partnership than alone.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-11"
     },
     {
-      "dimension": "avoidant",
-      "text": "Criticism may make you withdraw quickly.",
+      "dimension": "dramatic",
+      "text": "People always know how you feel — your emotions show vividly.",
       "reverse": false,
       "id": "millon-personality-patterns-style-test-12"
+    },
+    {
+      "dimension": "confident",
+      "text": "You picture yourself succeeding where most people would fail.",
+      "reverse": false,
+      "id": "millon-personality-patterns-style-test-13"
+    },
+    {
+      "dimension": "adventurous",
+      "text": "Rules feel more like suggestions when they slow you down.",
+      "reverse": false,
+      "id": "millon-personality-patterns-style-test-14"
+    },
+    {
+      "dimension": "conscientious",
+      "text": "Small errors genuinely bother you until they are fixed.",
+      "reverse": false,
+      "id": "millon-personality-patterns-style-test-15"
+    },
+    {
+      "dimension": "leisurely",
+      "text": "You defend your right to do things your own way, at your own pace.",
+      "reverse": false,
+      "id": "millon-personality-patterns-style-test-16"
+    },
+    {
+      "dimension": "solitary",
+      "text": "Being around people most of the day energizes you.",
+      "reverse": true,
+      "id": "millon-personality-patterns-style-test-17"
+    },
+    {
+      "dimension": "sensitive",
+      "text": "You feel at ease in a new group almost immediately.",
+      "reverse": true,
+      "id": "millon-personality-patterns-style-test-18"
+    },
+    {
+      "dimension": "devoted",
+      "text": "You keep relationships smooth by putting others' preferences first.",
+      "reverse": false,
+      "id": "millon-personality-patterns-style-test-19"
+    },
+    {
+      "dimension": "dramatic",
+      "text": "Going unnoticed at a gathering doesn't bother you at all.",
+      "reverse": true,
+      "id": "millon-personality-patterns-style-test-20"
+    },
+    {
+      "dimension": "confident",
+      "text": "Special recognition for your work feels natural to expect.",
+      "reverse": false,
+      "id": "millon-personality-patterns-style-test-21"
+    },
+    {
+      "dimension": "adventurous",
+      "text": "You avoid risks even when the potential payoff is large.",
+      "reverse": true,
+      "id": "millon-personality-patterns-style-test-22"
+    },
+    {
+      "dimension": "conscientious",
+      "text": "You are relaxed about deadlines and loose ends.",
+      "reverse": true,
+      "id": "millon-personality-patterns-style-test-23"
+    },
+    {
+      "dimension": "leisurely",
+      "text": "Outside demands rarely change your pace — your rhythm wins.",
+      "reverse": false,
+      "id": "millon-personality-patterns-style-test-24"
     }
   ]
 };
